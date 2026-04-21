@@ -2,959 +2,1278 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mitti – Smart Farming Assistant</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mitti – Smart Farming</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Malayalam:wght@400;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --green:#1A5C38;--green2:#2E8B57;--green3:#E8F5E2;
-  --amber:#F4A429;--amber3:#FEF3E2;
-  --bg:#F0F7EE;--card:#fff;--border:#D6EDD0;
-  --text:#1A2E1A;--muted:#6B8C6B;
-  --danger:#C0392B;--info:#1A6EA8;--teal:#0F8C6E;
-  --radius:16px;--shadow:0 2px 16px rgba(26,92,56,0.08);
+  --g1:#0D4F2E;--g2:#1A6B3E;--g3:#2E8B57;--g4:#4CAF80;--g5:#E8F5E2;
+  --a1:#E8920A;--a2:#F4A429;--a3:#FEF3E2;
+  --bg:#F0F7EE;--card:#fff;--border:#C8E6C9;
+  --text:#0D1F0D;--muted:#5A7A5A;
+  --danger:#C62828;--info:#1565C0;--teal:#006064;
+  --r:16px;--sh:0 4px 24px rgba(13,79,46,0.1);
 }
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* ── ONBOARDING ── */
-#onboarding{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
-.ob-progress{display:flex;gap:6px;padding:20px 24px 0}
-.ob-step{height:4px;border-radius:2px;flex:1;background:var(--border);transition:background 0.3s}
-.ob-step.done{background:var(--green)}
-.ob-screen{display:none;flex:1;flex-direction:column;padding:28px 24px 24px;overflow-y:auto}
-.ob-screen.active{display:flex}
-.ob-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.2}
-.ob-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
-.ob-illus{font-size:80px;text-align:center;margin-bottom:20px}
-.ob-input-wrap{margin-bottom:16px}
-.ob-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px;display:block}
-.ob-input{width:100%;border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:15px;outline:none;font-family:inherit;background:var(--card);color:var(--text);transition:border 0.2s}
-.ob-input:focus{border-color:var(--green2)}
-.ob-input.error{border-color:var(--danger)}
-.ob-err{font-size:12px;color:var(--danger);margin-top:5px;display:none}
-.ob-row{display:flex;gap:12px}
-.ob-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:auto;transition:all 0.2s}
-.ob-btn:hover{background:var(--green2)}
-.ob-btn:disabled{background:#ccc;cursor:default}
-.ob-btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
-.ob-btn-outline:hover{border-color:var(--green);color:var(--green);background:var(--green3)}
+/* ═══ ANIMATIONS ═══ */
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(3deg)}}
+@keyframes floatY2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(-2deg)}}
+@keyframes floatY3{0%,100%{transform:translateY(0)}50%{transform:translateY(-22px)}}
+@keyframes spin3d{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes rotateOrbit{0%{transform:rotate(0deg) translateX(70px) rotate(0deg)}100%{transform:rotate(360deg) translateX(70px) rotate(-360deg)}}
+@keyframes growBar{from{width:0}to{width:var(--w)}}
+@keyframes ripple{0%{transform:scale(0);opacity:1}100%{transform:scale(3);opacity:0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(46,139,87,0.4)}50%{box-shadow:0 0 0 12px rgba(46,139,87,0)}}
 
-/* OTP boxes */
-.otp-row{display:flex;gap:12px;justify-content:center;margin:24px 0}
-.otp-box{width:54px;height:60px;border:1.5px solid var(--border);border-radius:14px;font-size:24px;font-weight:700;text-align:center;outline:none;font-family:inherit;background:var(--card);color:var(--text);transition:border 0.2s}
-.otp-box:focus{border-color:var(--green2)}
+.anim-slide-up{animation:slideUp 0.5s ease forwards}
+.anim-slide-in{animation:slideIn 0.4s ease forwards}
+.anim-fade{animation:fadeIn 0.4s ease forwards}
+
+/* ═══ SPLASH SCREEN ═══ */
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#0D4F2E 0%,#1A6B3E 50%,#006064 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.splash-scene{position:relative;width:320px;height:280px;perspective:800px;margin-bottom:24px}
+.splash-ground{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,#2E8B57,#1A5C38);border-radius:50% 50% 0 0 / 20px 20px 0 0;transform:perspective(400px) rotateX(20deg)}
+.float-obj{position:absolute;animation:floatY 3s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.3));font-size:52px;transform-style:preserve-3d}
+.float-obj:nth-child(2){animation:floatY2 3.5s ease-in-out infinite;animation-delay:0.5s}
+.float-obj:nth-child(3){animation:floatY3 2.8s ease-in-out infinite;animation-delay:1s}
+.float-obj:nth-child(4){animation:floatY 4s ease-in-out infinite;animation-delay:1.5s}
+.orbit-wrap{position:absolute;top:50%;left:50%;width:0;height:0}
+.orbit-item{position:absolute;font-size:22px;animation:rotateOrbit 6s linear infinite}
+.orbit-item:nth-child(2){animation-delay:-2s}
+.orbit-item:nth-child(3){animation-delay:-4s}
+.splash-title{font-size:52px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:6px;animation:slideUp 0.8s ease}
+.splash-sub{font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:40px;animation:slideUp 0.8s ease 0.2s both}
+.splash-btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:300px;animation:slideUp 0.8s ease 0.4s both}
+.splash-bg-decor{position:absolute;border-radius:50%;background:rgba(255,255,255,0.04)}
+
+/* ═══ ONBOARDING ═══ */
+#onboarding{position:fixed;inset:0;z-index:998;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
+.ob-topbar{padding:16px 20px;display:flex;align-items:center;gap:14px;background:var(--card);border-bottom:1px solid var(--border)}
+.ob-back{background:var(--bg);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ob-prog-wrap{flex:1}
+.ob-prog-label{font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.ob-prog-bar-bg{height:5px;background:var(--g5);border-radius:3px;overflow:hidden}
+.ob-prog-fill{height:100%;background:linear-gradient(90deg,var(--g3),var(--a2));border-radius:3px;transition:width 0.4s ease}
+.ob-body{flex:1;overflow-y:auto;padding:24px 20px}
+.ob-step{display:none;animation:slideIn 0.35s ease}
+.ob-step.active{display:block}
+.ob-illus{text-align:center;margin-bottom:20px}
+.ob-illus-inner{display:inline-block;animation:floatY2 3s ease-in-out infinite}
+.ob-title{font-size:24px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.25}
+.ob-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7}
+
+/* Input styles */
+.inp-group{margin-bottom:16px}
+.inp-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:7px;display:block;letter-spacing:0.3px;text-transform:uppercase}
+.inp{width:100%;border:2px solid var(--border);border-radius:14px;padding:14px 16px;font-size:15px;outline:none;font-family:inherit;background:var(--card);color:var(--text);transition:all 0.25s}
+.inp:focus{border-color:var(--g3);box-shadow:0 0 0 4px rgba(46,139,87,0.12)}
+.inp.err{border-color:var(--danger)}
+.inp-err{font-size:12px;color:var(--danger);margin-top:5px;display:none;font-weight:500}
+.inp-row{display:flex;gap:10px}
+.inp-prefix{width:72px;flex-shrink:0;text-align:center;background:var(--g5);border-color:var(--g5);color:var(--g1);font-weight:700;cursor:default}
+
+/* Buttons */
+.btn{width:100%;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.25s;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(255,255,255,0.15);opacity:0;transition:opacity 0.2s}
+.btn:hover::after{opacity:1}
+.btn-primary{background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;box-shadow:0 4px 20px rgba(26,107,62,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,107,62,0.45)}
+.btn-primary:active{transform:translateY(0)}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--muted)}
+.btn-outline:hover{border-color:var(--g3);color:var(--g2);background:var(--g5)}
+.btn-amber{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+
+/* OTP */
+.otp-title{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6}
+.otp-wrap{display:flex;gap:10px;justify-content:center;margin:0 0 20px}
+.otp-box{width:52px;height:60px;border:2px solid var(--border);border-radius:14px;font-size:24px;font-weight:700;text-align:center;outline:none;font-family:inherit;background:var(--card);color:var(--text);transition:all 0.2s;caret-color:var(--g3)}
+.otp-box:focus{border-color:var(--g3);box-shadow:0 0 0 4px rgba(46,139,87,0.15);transform:scale(1.05)}
+.otp-box.filled{border-color:var(--g3);background:var(--g5)}
+.otp-resend{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px}
+.otp-resend span{color:var(--g2);cursor:pointer;font-weight:700}
+.otp-demo{background:var(--a3);border-radius:12px;padding:12px 16px;font-size:13px;margin-bottom:20px;border:1px solid #F4C870;display:flex;align-items:center;gap:8px}
+.otp-timer{font-size:13px;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:600}
 
 /* Language grid */
-.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.lang-card{border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px;background:var(--card)}
-.lang-card:hover{border-color:var(--green2);background:var(--green3)}
-.lang-card.selected{border-color:var(--green);background:var(--green3)}
-.lang-card.selected .lang-check{opacity:1}
-.lang-flag{font-size:26px}
-.lang-name{font-size:14px;font-weight:700;color:var(--text)}
-.lang-native{font-size:13px;color:var(--muted)}
-.lang-check{opacity:0;color:var(--green);font-size:18px;margin-left:auto;transition:opacity 0.2s}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.lang-card{border:2px solid var(--border);border-radius:14px;padding:13px 14px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;background:var(--card);position:relative}
+.lang-card:hover{border-color:var(--g3);background:var(--g5);transform:translateY(-2px)}
+.lang-card.sel{border-color:var(--g3);background:var(--g5)}
+.lang-card.sel::after{content:'✓';position:absolute;top:8px;right:10px;font-size:13px;font-weight:800;color:var(--g2)}
+.lang-name{font-size:13px;font-weight:700;color:var(--text)}
+.lang-native{font-size:12px;color:var(--muted)}
 
 /* Location */
-.pincode-status{font-size:13px;margin-top:8px;display:none}
-.pincode-status.loading{display:block;color:var(--muted)}
-.pincode-status.found{display:block;color:var(--green)}
-.pincode-status.notfound{display:block;color:var(--danger)}
-.location-card{background:var(--green3);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px;display:none}
-.location-card.show{display:block}
+.pin-status{font-size:12px;margin-top:6px;display:none;font-weight:600;padding:4px 0}
+.pin-status.show{display:block}
+.loc-card{background:var(--g5);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:12px;display:none;animation:slideUp 0.3s ease}
+.loc-card.show{display:block}
+.loc-weather{display:flex;align-items:center;gap:14px;padding-top:12px;margin-top:12px;border-top:1px solid var(--border)}
 
-/* Welcome screen */
-.welcome-hero{background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);border-radius:24px;padding:32px 24px;color:#fff;text-align:center;margin-bottom:24px}
-.welcome-avatar{width:72px;height:72px;border-radius:36px;background:rgba(255,255,255,0.2);display:inline-flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:16px}
+/* API key */
+.api-guide{background:linear-gradient(135deg,#E3F2FD,#E8F5E9);border-radius:14px;padding:16px;margin-bottom:20px}
+.api-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:13px;line-height:1.6}
+.api-step:last-child{margin-bottom:0}
+.api-num{background:var(--g2);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.inp-icon-wrap{position:relative}
+.inp-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:17px;color:var(--muted)}
 
-/* ── MAIN APP ── */
+/* ═══ MAIN APP ═══ */
 #app{display:none}
-.app-wrap{display:flex;min-height:100vh}
-.sidebar{width:240px;background:var(--card);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;transition:transform 0.3s}
-.main{margin-left:240px;flex:1;min-height:100vh}
-.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.content{padding:28px;max-width:1100px}
-.sidebar-logo{padding:20px 20px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
-.logo-icon{width:40px;height:40px;background:var(--green);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.logo-text{font-size:20px;font-weight:800;color:var(--green)}
-.nav-items{padding:16px 12px;flex:1}
-.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);transition:all 0.2s;margin-bottom:4px;border:none;background:none;width:100%;text-align:left;font-family:inherit}
-.nav-item:hover{background:var(--green3);color:var(--green)}
-.nav-item.active{background:var(--green3);color:var(--green)}
-.sidebar-bottom{padding:16px;border-top:1px solid var(--border)}
-.user-chip{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.user-avatar{width:36px;height:36px;border-radius:18px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0}
-.lang-btn{background:var(--amber);color:#fff;border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.hero-card{background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);color:#fff;border-radius:20px;padding:28px;position:relative;overflow:hidden;margin-bottom:24px}
-.hero-card::after{content:"🌿";position:absolute;right:-10px;top:-10px;font-size:120px;opacity:0.1;pointer-events:none}
-.hero-temp{font-size:64px;font-weight:800;line-height:1}
-.hero-badge{background:rgba(255,255,255,0.18);border-radius:12px;padding:7px 14px;font-size:13px;font-weight:600}
-.stat-card{padding:20px;text-align:center}
+.app-layout{display:flex;min-height:100vh}
+.sidebar{width:248px;background:var(--card);border-right:1.5px solid var(--border);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;transition:transform 0.3s cubic-bezier(.4,0,.2,1)}
+.sb-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--border)}
+.sb-logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 4px 12px rgba(13,79,46,0.3)}
+.sb-logo-text{font-size:21px;font-weight:800;color:var(--g1)}
+.sb-nav{padding:14px 10px;flex:1}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);transition:all 0.2s;margin-bottom:3px;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.sb-item:hover{background:var(--g5);color:var(--g2)}
+.sb-item.active{background:var(--g5);color:var(--g1);position:relative}
+.sb-item.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--g3);border-radius:0 3px 3px 0}
+.sb-bottom{padding:14px;border-top:1.5px solid var(--border)}
+.sb-user{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px;background:var(--g5);border-radius:12px}
+.sb-avatar{width:38px;height:38px;border-radius:19px;background:linear-gradient(135deg,var(--g2),var(--g4));display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0}
+.lang-cycle-btn{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.lang-cycle-btn:hover{transform:translateY(-1px)}
+.main-area{margin-left:248px;flex:1;min-height:100vh}
+.topbar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tb-title{font-size:18px;font-weight:800;color:var(--text)}
+.tb-date{font-size:11px;color:var(--muted);margin-top:1px}
+.content{padding:28px;max-width:1140px}
+
+/* Cards */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.hero{background:linear-gradient(135deg,var(--g1) 0%,var(--teal) 100%);color:#fff;border-radius:22px;padding:28px;position:relative;overflow:hidden;margin-bottom:24px}
+.hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
+.hero::after{content:'';position:absolute;right:60px;bottom:-60px;width:160px;height:160px;background:rgba(255,255,255,0.04);border-radius:50%}
+.hero-temp{font-size:62px;font-weight:800;line-height:1}
+.hero-badge{background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border-radius:10px;padding:7px 13px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.25)}
+.stat-card{padding:20px;text-align:center;transition:transform 0.2s}
+.stat-card:hover{transform:translateY(-3px)}
 .stat-val{font-size:28px;font-weight:800;margin:8px 0 4px}
-.stat-lbl{font-size:12px;color:var(--muted);font-weight:600}
-.field-card{padding:18px;cursor:pointer;transition:all 0.2s;border-radius:var(--radius)}
-.field-card:hover{box-shadow:0 4px 24px rgba(26,92,56,0.12);transform:translateY(-2px)}
-.health-bar-bg{background:#E8F5E2;border-radius:6px;height:8px;overflow:hidden;flex:1}
-.health-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green2),var(--amber))}
-.badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px}
-.badge-optimal{background:#E8F5E0;color:#1A5C38}
-.badge-refill{background:#FDEDEC;color:#C0392B}
-.badge-full{background:#EAF3FB;color:#1A6EA8}
-.market-row{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);transition:background 0.15s}
-.market-row:last-child{border-bottom:none}
-.market-row:hover{background:var(--bg)}
-.up{color:#1A7A3C}.down{color:var(--danger)}.stable{color:var(--muted)}
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 140px);max-height:720px}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:12px}
-.msg{display:flex;gap:10px;align-items:flex-start}
-.msg.user{flex-direction:row-reverse}
-.msg-avatar{width:36px;height:36px;border-radius:18px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.msg-bubble{max-width:72%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.65;white-space:pre-wrap}
-.msg.ai .msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:4px 18px 18px 18px;color:var(--text)}
-.msg.user .msg-bubble{background:var(--green);color:#fff;border-radius:18px 4px 18px 18px}
-.chat-input-row{display:flex;gap:10px;padding:16px 0 0;border-top:1px solid var(--border)}
-.chat-input{flex:1;border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;font-size:14px;outline:none;font-family:inherit;background:var(--card);color:var(--text)}
-.chat-input:focus{border-color:var(--green2)}
-.chat-send{width:44px;height:44px;border-radius:12px;border:none;background:var(--green);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.chat-send:disabled{background:#ccc;cursor:default}
-.suggestion-btn{background:var(--green3);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;color:var(--green);cursor:pointer;font-weight:600;font-family:inherit}
-.forecast-row{display:flex;align-items:center;padding:13px 18px;border-bottom:1px solid var(--border)}
-.forecast-row:last-child{border-bottom:none}
-.tip-card{display:flex;gap:14px;align-items:flex-start;border-radius:14px;padding:16px}
-.section-title{font-size:19px;font-weight:800;color:var(--text);margin-bottom:16px}
-.section-sub{font-size:13px;color:var(--muted);margin-bottom:16px;margin-top:-10px}
-.mover-card{border-radius:16px;padding:16px 18px}
-.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.chip{border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all 0.2s;font-family:inherit}
-.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
-.search-box{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:10px 16px;margin-bottom:14px}
-.search-box:focus-within{border-color:var(--green2)}
-.search-input{border:none;outline:none;flex:1;font-size:14px;font-family:inherit;background:transparent;color:var(--text)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal{background:var(--card);border-radius:24px;padding:28px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto}
-.modal-close{background:var(--bg);border:none;border-radius:20px;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.modal-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
-.modal-row span:first-child{color:var(--muted)}
-.modal-row span:last-child{font-weight:600}
-.btn-primary{width:100%;margin-top:20px;background:var(--green);color:#fff;border:none;border-radius:16px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green2);animation:bounce 1.2s ease-in-out infinite}
-.dot:nth-child(2){animation-delay:0.2s}.dot:nth-child(3){animation-delay:0.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:24px;padding:4px}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99}
-@media(max-width:768px){
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.3px;text-transform:uppercase}
+.field-card{padding:18px;cursor:pointer;transition:all 0.25s;border-radius:var(--r)}
+.field-card:hover{box-shadow:0 8px 32px rgba(13,79,46,0.14);transform:translateY(-3px)}
+.hbar-bg{background:var(--g5);border-radius:6px;height:8px;overflow:hidden;flex:1}
+.hbar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--g3),var(--a2))}
+.bdg{font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px}
+.bdg-O{background:#E8F5E0;color:#0D4F2E}
+.bdg-R{background:#FFEBEE;color:#C62828}
+.bdg-F{background:#E3F2FD;color:#1565C0}
+.mkt-row{display:flex;align-items:center;padding:14px 18px;border-bottom:1.5px solid var(--border);transition:background 0.15s}
+.mkt-row:last-child{border-bottom:none}
+.mkt-row:hover{background:var(--bg)}
+.up{color:#2E7D32}.dn{color:var(--danger)}.st{color:var(--muted)}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 155px)}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:10px;align-items:flex-end}
+.msg.u{flex-direction:row-reverse}
+.msg-av{width:34px;height:34px;border-radius:17px;background:linear-gradient(135deg,var(--g2),var(--g4));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.msg-bub{max-width:74%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.65;white-space:pre-wrap}
+.msg.ai .msg-bub{background:var(--card);border:1.5px solid var(--border);border-radius:4px 18px 18px 18px;color:var(--text)}
+.msg.u .msg-bub{background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border-radius:18px 4px 18px 18px}
+.chat-input-row{display:flex;gap:10px;padding:14px 0 0;border-top:1.5px solid var(--border)}
+.chat-inp{flex:1;border:2px solid var(--border);border-radius:14px;padding:12px 16px;font-size:14px;outline:none;font-family:inherit;background:var(--card);color:var(--text);transition:border 0.2s}
+.chat-inp:focus{border-color:var(--g3)}
+.chat-send{width:46px;height:46px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;box-shadow:0 4px 14px rgba(26,107,62,0.35)}
+.chat-send:hover{transform:translateY(-2px)}
+.chat-send:disabled{background:#ccc;box-shadow:none;transform:none}
+.sugg-btn{background:var(--g5);border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;color:var(--g1);cursor:pointer;font-weight:600;font-family:inherit;white-space:nowrap;transition:all 0.2s}
+.sugg-btn:hover{background:var(--g2);color:#fff;border-color:var(--g2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:bounce 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+.fc-row{display:flex;align-items:center;padding:12px 18px;border-bottom:1.5px solid var(--border);transition:background 0.15s}
+.fc-row:last-child{border-bottom:none}
+.fc-row:hover{background:var(--bg)}
+.sec-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:16px}
+.chip{border-radius:20px;padding:6px 15px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--muted);transition:all 0.2s;font-family:inherit}
+.chip.active{background:var(--g2);color:#fff;border-color:var(--g2)}
+.sch-box{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--border);border-radius:14px;padding:10px 16px;margin-bottom:14px}
+.sch-box:focus-within{border-color:var(--g3)}
+.sch-inp{border:none;outline:none;flex:1;font-size:14px;font-family:inherit;background:transparent;color:var(--text)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border-radius:24px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease}
+.m-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px solid var(--border);font-size:14px}
+.m-row span:first-child{color:var(--muted)}
+.m-row span:last-child{font-weight:600}
+.hamburger{display:none;background:var(--g5);border:none;border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:20px;align-items:center;justify-content:center;flex-shrink:0}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99;backdrop-filter:blur(2px)}
+.no-api-box{background:linear-gradient(135deg,var(--a3),#FFF8E1);border:1.5px solid #F4C870;border-radius:14px;padding:16px;margin-bottom:14px;font-size:13px;line-height:1.7}
+.tip-card{display:flex;gap:14px;align-items:flex-start;border-radius:16px;padding:16px;margin-bottom:12px}
+
+/* Skeleton loader */
+.skel{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+
+@media(max-width:820px){
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
-  .sidebar-overlay.open{display:block}
-  .main{margin-left:0}
-  .topbar{padding:14px 16px}
+  .sb-overlay.open{display:block}
+  .main-area{margin-left:0}
+  .topbar{padding:12px 16px}
   .content{padding:16px}
-  .grid-4{grid-template-columns:1fr 1fr}
-  .grid-3{grid-template-columns:1fr 1fr}
-  .grid-2{grid-template-columns:1fr}
-  .hamburger{display:block}
-  .chat-wrap{height:calc(100vh - 120px)}
+  .g4{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .hamburger{display:flex}
   .hero-temp{font-size:48px}
+  .chat-wrap{height:calc(100vh - 130px)}
   .lang-grid{grid-template-columns:1fr 1fr}
 }
+@media(max-width:480px){.g3{grid-template-columns:1fr}.hero-temp{font-size:42px}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ ONBOARDING ═══════════════ -->
+<!-- ════ SPLASH ════ -->
+<div id="splash">
+  <div class="splash-bg-decor" style="width:400px;height:400px;top:-100px;right:-100px"></div>
+  <div class="splash-bg-decor" style="width:300px;height:300px;bottom:-80px;left:-80px"></div>
+
+  <div class="splash-scene">
+    <div class="float-obj" style="top:20px;left:30px;font-size:58px">🌾</div>
+    <div class="float-obj" style="top:10px;right:20px;font-size:50px">🚜</div>
+    <div class="float-obj" style="top:80px;left:120px;font-size:46px">🌱</div>
+    <div class="float-obj" style="top:60px;right:80px;font-size:44px">☀️</div>
+    <div class="splash-ground"></div>
+    <div class="orbit-wrap" style="top:140px;left:160px">
+      <div class="orbit-item" style="animation-delay:0s">🌽</div>
+      <div class="orbit-item" style="animation-delay:-2s">🍅</div>
+      <div class="orbit-item" style="animation-delay:-4s">🥬</div>
+    </div>
+  </div>
+
+  <div class="splash-title">Mitti</div>
+  <div class="splash-sub">🇮🇳 Smart Farming Assistant for Every Indian Farmer</div>
+
+  <div class="splash-btns">
+    <button class="btn btn-amber" style="font-size:16px;padding:17px" onclick="showSignup()">
+      🌾 Get Started — Sign Up
+    </button>
+    <button class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.3);backdrop-filter:blur(8px)" onclick="showLogin()">
+      🔑 Login to My Account
+    </button>
+  </div>
+  <div style="position:absolute;bottom:20px;font-size:11px;color:rgba(255,255,255,0.4)">
+    Supports 12 Indian Languages · Available in all states
+  </div>
+</div>
+
+<!-- ════ ONBOARDING ════ -->
 <div id="onboarding">
-  <div class="ob-progress">
-    <div class="ob-step" id="p0"></div>
-    <div class="ob-step" id="p1"></div>
-    <div class="ob-step" id="p2"></div>
-    <div class="ob-step" id="p3"></div>
-    <div class="ob-step" id="p4"></div>
+  <div class="ob-topbar">
+    <button class="ob-back" id="ob-back-btn" onclick="obBack()">←</button>
+    <div class="ob-prog-wrap">
+      <div class="ob-prog-label" id="ob-prog-label">Step 1 of 6</div>
+      <div class="ob-prog-bar-bg"><div class="ob-prog-fill" id="ob-prog-fill" style="width:16%"></div></div>
+    </div>
+    <div style="font-size:22px">🌾</div>
   </div>
+  <div class="ob-body">
 
-  <!-- Screen 0: Welcome splash -->
-  <div class="ob-screen active" id="ob0">
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-      <div style="font-size:100px;margin-bottom:20px">🌾</div>
-      <div style="font-size:36px;font-weight:800;color:var(--green);margin-bottom:12px">Mitti</div>
-      <div style="font-size:16px;color:var(--muted);margin-bottom:8px">Smart Farming Assistant</div>
-      <div style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.7;margin-bottom:40px">
-        Your AI-powered farming companion for better crops, smarter irrigation & live market prices.
+    <!-- Login Step -->
+    <div class="ob-step" id="step-login">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:72px">🔑</div></div>
+      <div class="ob-title">Welcome back!</div>
+      <div class="ob-sub">Login to your Mitti account</div>
+      <div class="inp-group">
+        <label class="inp-label">Mobile Number</label>
+        <div class="inp-row">
+          <input class="inp inp-prefix" value="+91" readonly style="width:72px"/>
+          <input class="inp" id="li-phone" type="tel" placeholder="9876543210" maxlength="10"/>
+        </div>
+        <div class="inp-err" id="li-phone-err">Enter valid 10-digit number</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
-        <button class="ob-btn" onclick="goStep(1)">Get Started →</button>
-        <button class="ob-btn ob-btn-outline" onclick="goStep(1)">I already have an account</button>
+      <div style="margin-bottom:24px"></div>
+      <button class="btn btn-primary" onclick="doLogin()">Send OTP →</button>
+      <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        New user? <span style="color:var(--g2);cursor:pointer;font-weight:700" onclick="showSignup()">Sign Up here</span>
       </div>
     </div>
-  </div>
 
-  <!-- Screen 1: Sign Up -->
-  <div class="ob-screen" id="ob1">
-    <div class="ob-illus">📱</div>
-    <div class="ob-title">Create your account</div>
-    <div class="ob-sub">Enter your details to get started with Mitti</div>
-
-    <div class="ob-input-wrap">
-      <label class="ob-label">Full Name</label>
-      <input class="ob-input" id="inp-name" type="text" placeholder="e.g. Ramesh Kumar"/>
-      <div class="ob-err" id="err-name">Please enter your name</div>
-    </div>
-    <div class="ob-input-wrap">
-      <label class="ob-label">Mobile Number</label>
-      <div class="ob-row">
-        <input class="ob-input" style="width:80px;flex-shrink:0" value="+91" readonly/>
-        <input class="ob-input" id="inp-phone" type="tel" placeholder="9876543210" maxlength="10"/>
+    <!-- Signup Steps -->
+    <div class="ob-step" id="step-signup">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:72px">📱</div></div>
+      <div class="ob-title">Create your account</div>
+      <div class="ob-sub">Join thousands of smart farmers across India</div>
+      <div class="inp-group">
+        <label class="inp-label">Full Name</label>
+        <input class="inp" id="su-name" type="text" placeholder="e.g. Ramesh Kumar"/>
+        <div class="inp-err" id="su-name-err">Please enter your name</div>
       </div>
-      <div class="ob-err" id="err-phone">Enter valid 10-digit mobile number</div>
-    </div>
-    <div class="ob-input-wrap">
-      <label class="ob-label">Email Address</label>
-      <input class="ob-input" id="inp-email" type="email" placeholder="you@example.com"/>
-      <div class="ob-err" id="err-email">Enter a valid email address</div>
-    </div>
-    <button class="ob-btn" style="margin-top:20px" onclick="doSignup()">Send OTP →</button>
-  </div>
-
-  <!-- Screen 2: OTP Verify -->
-  <div class="ob-screen" id="ob2" style="text-align:center">
-    <div class="ob-illus">🔐</div>
-    <div class="ob-title">Verify your number</div>
-    <div class="ob-sub" id="otp-sub">We sent a 6-digit OTP to your mobile number</div>
-    <div class="otp-row">
-      <input class="otp-box" maxlength="1" id="otp0" oninput="otpNext(0)" onkeydown="otpBack(0,event)"/>
-      <input class="otp-box" maxlength="1" id="otp1" oninput="otpNext(1)" onkeydown="otpBack(1,event)"/>
-      <input class="otp-box" maxlength="1" id="otp2" oninput="otpNext(2)" onkeydown="otpBack(2,event)"/>
-      <input class="otp-box" maxlength="1" id="otp3" oninput="otpNext(3)" onkeydown="otpBack(3,event)"/>
-      <input class="otp-box" maxlength="1" id="otp4" oninput="otpNext(4)" onkeydown="otpBack(4,event)"/>
-      <input class="otp-box" maxlength="1" id="otp5" oninput="otpNext(5)" onkeydown="otpBack(5,event)"/>
-    </div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Didn't receive? <span style="color:var(--green);cursor:pointer;font-weight:600" onclick="resendOTP()">Resend OTP</span></div>
-    <div style="font-size:12px;color:var(--muted);background:var(--amber3);border-radius:10px;padding:10px 14px;margin-bottom:20px">
-      🔒 For demo, use OTP: <strong>123456</strong>
-    </div>
-    <button class="ob-btn" onclick="verifyOTP()">Verify & Continue →</button>
-  </div>
-
-  <!-- Screen 3: Language Selection -->
-  <div class="ob-screen" id="ob3">
-    <div class="ob-title">Choose your languages</div>
-    <div class="ob-sub">Select all languages you want to use in Mitti</div>
-    <div class="lang-grid" id="lang-grid"></div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">✅ Selected: <span id="lang-count">0</span> language(s)</div>
-    <button class="ob-btn" onclick="doLangSelect()">Continue →</button>
-  </div>
-
-  <!-- Screen 4: Location -->
-  <div class="ob-screen" id="ob4">
-    <div class="ob-illus">📍</div>
-    <div class="ob-title">Your farm location</div>
-    <div class="ob-sub">Enter your PIN code to get local weather and mandi prices</div>
-    <div class="ob-input-wrap">
-      <label class="ob-label">State</label>
-      <select class="ob-input" id="inp-state" onchange="onStateChange()">
-        <option value="">Select State</option>
-        <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option>
-        <option>Chhattisgarh</option><option>Gujarat</option><option>Haryana</option>
-        <option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option>
-        <option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option>
-        <option>Manipur</option><option>Meghalaya</option><option>Odisha</option>
-        <option>Punjab</option><option>Rajasthan</option><option>Sikkim</option>
-        <option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option>
-        <option>Uttar Pradesh</option><option>Uttarakhand</option>
-        <option selected>West Bengal</option>
-      </select>
-    </div>
-    <div class="ob-input-wrap">
-      <label class="ob-label">District / City</label>
-      <input class="ob-input" id="inp-city" type="text" placeholder="e.g. Kharagpur"/>
-      <div class="ob-err" id="err-city">Please enter your city/district</div>
-    </div>
-    <div class="ob-input-wrap">
-      <label class="ob-label">PIN Code</label>
-      <input class="ob-input" id="inp-pin" type="tel" placeholder="e.g. 721301" maxlength="6"
-        oninput="lookupPin(this.value)"/>
-      <div class="pincode-status loading" id="pin-loading">🔍 Looking up location...</div>
-      <div class="pincode-status found" id="pin-found"></div>
-      <div class="pincode-status notfound" id="pin-notfound">⚠️ PIN not found. Please check and retry.</div>
-    </div>
-    <div class="location-card" id="loc-preview">
-      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">📍 Location Confirmed</div>
-      <div id="loc-details" style="font-size:14px;color:var(--text)"></div>
-      <div id="loc-weather" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
-    </div>
-    <button class="ob-btn" style="margin-top:20px" onclick="doLocation()">Set My Location →</button>
-  </div>
-
-  <!-- Screen 5: Welcome -->
-  <div class="ob-screen" id="ob5">
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-      <div class="welcome-hero" style="width:100%">
-        <div class="welcome-avatar">👨‍🌾</div>
-        <div style="font-size:24px;font-weight:800;margin-bottom:8px">Welcome to Mitti!</div>
-        <div id="welcome-name" style="font-size:16px;opacity:0.85"></div>
+      <div class="inp-group">
+        <label class="inp-label">Mobile Number</label>
+        <div class="inp-row">
+          <input class="inp inp-prefix" value="+91" readonly/>
+          <input class="inp" id="su-phone" type="tel" placeholder="9876543210" maxlength="10"/>
+        </div>
+        <div class="inp-err" id="su-phone-err">Enter valid 10-digit number</div>
       </div>
-      <div id="welcome-summary" style="width:100%;text-align:left"></div>
-      <button class="ob-btn" style="margin-top:24px" onclick="enterApp()">🚀 Open My Dashboard</button>
+      <div class="inp-group">
+        <label class="inp-label">Email Address</label>
+        <input class="inp" id="su-email" type="email" placeholder="farmer@example.com"/>
+        <div class="inp-err" id="su-email-err">Enter a valid email address</div>
+      </div>
+      <div style="margin-bottom:8px"></div>
+      <button class="btn btn-primary" onclick="doSignup()">Send OTP →</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
+        Already have account? <span style="color:var(--g2);cursor:pointer;font-weight:700" onclick="showLogin()">Login</span>
+      </div>
     </div>
+
+    <!-- OTP Step -->
+    <div class="ob-step" id="step-otp">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:72px">📲</div></div>
+      <div class="ob-title">Enter OTP</div>
+      <div class="otp-title" id="otp-sent-to">We sent a 6-digit OTP to your mobile</div>
+      <div class="otp-wrap" id="otp-boxes"></div>
+      <div class="otp-timer" id="otp-timer">Resend in 30s</div>
+      <div class="otp-resend">Didn't receive? <span id="resend-btn" onclick="resendOTP()" style="opacity:0.4;cursor:default">Resend OTP</span></div>
+      <div class="otp-demo">🔒 <span>Demo OTP: <strong>1 2 3 4 5 6</strong></span></div>
+      <button class="btn btn-primary" onclick="verifyOTP()">Verify & Continue →</button>
+    </div>
+
+    <!-- Language Step -->
+    <div class="ob-step" id="step-lang">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:68px">🗣️</div></div>
+      <div class="ob-title">अपनी भाषा चुनें</div>
+      <div class="ob-sub">Select all Indian languages you want to use in Mitti</div>
+      <div class="lang-grid" id="lang-grid"></div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px;font-weight:600">
+        ✅ <span id="lang-count">0</span> language(s) selected
+      </div>
+      <button class="btn btn-primary" onclick="doLang()">Continue →</button>
+    </div>
+
+    <!-- Location Step -->
+    <div class="ob-step" id="step-loc">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:68px">📍</div></div>
+      <div class="ob-title">Your farm location</div>
+      <div class="ob-sub">Enter PIN code to get live local weather & mandi prices for your area</div>
+      <div class="inp-group">
+        <label class="inp-label">PIN Code <span style="font-size:11px;color:var(--muted)">(enter to auto-detect)</span></label>
+        <input class="inp" id="loc-pin" type="tel" placeholder="e.g. 721301" maxlength="6" oninput="lookupPIN(this.value)"/>
+        <div class="pin-status" id="pin-loading" style="color:var(--muted)">🔍 Looking up PIN code...</div>
+        <div class="pin-status" id="pin-ok" style="color:var(--g2)"></div>
+        <div class="pin-status" id="pin-err" style="color:var(--danger)">⚠️ PIN not found. Please try manual entry below.</div>
+      </div>
+      <div class="loc-card" id="loc-preview">
+        <div style="font-size:13px;font-weight:800;color:var(--g2);margin-bottom:10px">📍 Location Confirmed</div>
+        <div id="loc-detail" style="font-size:15px;font-weight:600"></div>
+        <div class="loc-weather" id="loc-wx"></div>
+      </div>
+      <div class="inp-group" style="margin-top:14px">
+        <label class="inp-label">State</label>
+        <select class="inp" id="loc-state">
+          <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+          <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
+          <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+          <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
+          <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+          <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+          <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+          <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
+          <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
+          <option selected>West Bengal</option>
+        </select>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">District / City</label>
+        <input class="inp" id="loc-city" type="text" placeholder="e.g. Kharagpur"/>
+        <div class="inp-err" id="loc-city-err">Please enter your city or district</div>
+      </div>
+      <button class="btn btn-primary" onclick="doLoc()">Confirm Location →</button>
+    </div>
+
+    <!-- API Key Step -->
+    <div class="ob-step" id="step-api">
+      <div class="ob-illus"><div class="ob-illus-inner" style="font-size:68px">🤖</div></div>
+      <div class="ob-title">Enable KisanAI Chat</div>
+      <div class="ob-sub">Add your API key to chat with AI in any Indian language</div>
+      <div class="api-guide">
+        <div style="font-size:13px;font-weight:800;margin-bottom:12px;color:var(--g1)">How to get your FREE API key:</div>
+        <div class="api-step"><div class="api-num">1</div><div>Visit <a href="https://console.anthropic.com" target="_blank" style="color:var(--info);font-weight:700">console.anthropic.com</a> → Sign up free</div></div>
+        <div class="api-step"><div class="api-num">2</div><div>Go to <strong>"API Keys"</strong> → click <strong>"Create Key"</strong></div></div>
+        <div class="api-step"><div class="api-num">3</div><div>Copy the key starting with <code style="background:#fff;padding:1px 6px;border-radius:5px">sk-ant-</code></div></div>
+        <div class="api-step"><div class="api-num">4</div><div>Paste it below — stored only in your browser 🔒</div></div>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Anthropic API Key</label>
+        <div class="inp-icon-wrap">
+          <input class="inp" id="api-key-inp" type="password" placeholder="sk-ant-api03-xxxxxxxx"/>
+          <button class="inp-eye" onclick="toggleKey()">👁</button>
+        </div>
+        <div class="inp-err" id="api-key-err">Key must start with sk-ant-</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px">🔐 Never shared. Stored locally on your device only.</div>
+      <button class="btn btn-primary" onclick="doApiKey()" style="margin-bottom:10px">Save & Enable AI →</button>
+      <button class="btn btn-outline" onclick="skipApi()">Skip for now</button>
+    </div>
+
+    <!-- Welcome Step -->
+    <div class="ob-step" id="step-welcome">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:80px;animation:pulse 2s ease-in-out infinite">🎉</div>
+        <div style="font-size:26px;font-weight:800;color:var(--g1);margin-top:12px">You're all set!</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:6px" id="welcome-name"></div>
+      </div>
+      <div id="welcome-cards" style="margin-bottom:24px"></div>
+      <button class="btn btn-primary" style="font-size:16px;padding:17px;animation:glowPulse 2s infinite" onclick="enterApp()">
+        🚀 Open My Dashboard
+      </button>
+    </div>
+
   </div>
 </div>
 
-<!-- ═══════════════ MAIN APP ═══════════════ -->
+<!-- ════ MAIN APP ════ -->
 <div id="app">
-<div class="app-wrap">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">🌾</div>
-      <div>
-        <div class="logo-text">Mitti</div>
-        <div style="font-size:11px;color:var(--muted)" id="app-logo-sub">Smart Farming</div>
-      </div>
-    </div>
-    <nav class="nav-items" id="nav-items"></nav>
-    <div class="sidebar-bottom">
-      <div class="user-chip">
-        <div class="user-avatar">👨‍🌾</div>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">🌾</div>
         <div>
-          <div style="font-size:13px;font-weight:700;color:var(--text)" id="sb-name">Farmer</div>
-          <div style="font-size:11px;color:var(--muted)" id="sb-loc">—</div>
+          <div class="sb-logo-text">Mitti</div>
+          <div style="font-size:10px;color:var(--muted);font-weight:600">Smart Farming</div>
         </div>
       </div>
-      <button class="lang-btn" id="lang-btn" onclick="cycleLang()">EN</button>
-      <div style="font-size:11px;color:var(--muted);margin-top:8px" id="sb-pin"></div>
-    </div>
-  </aside>
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-  <div class="main">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="hamburger" onclick="openSidebar()">☰</button>
-        <div>
-          <div id="topbar-title" style="font-size:18px;font-weight:800;color:var(--text)">Home</div>
-          <div id="topbar-date" style="font-size:12px;color:var(--muted)"></div>
+      <nav class="sb-nav" id="sb-nav"></nav>
+      <div class="sb-bottom">
+        <div class="sb-user">
+          <div class="sb-avatar">👨‍🌾</div>
+          <div>
+            <div style="font-size:13px;font-weight:700" id="sb-name">—</div>
+            <div style="font-size:11px;color:var(--muted)" id="sb-loc">—</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <button class="lang-cycle-btn" id="lbtn1" onclick="cycleLang()">EN</button>
+          <div style="font-size:11px;color:var(--muted)" id="sb-pin"></div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px" id="sb-langs-list"></div>
+      </div>
+    </aside>
+    <div class="sb-overlay" id="sb-overlay" onclick="closeSB()"></div>
+    <div class="main-area">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="hamburger" onclick="openSB()">☰</button>
+          <div>
+            <div class="tb-title" id="tb-title">Home</div>
+            <div class="tb-date" id="tb-date"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="lang-cycle-btn" id="lbtn2" onclick="cycleLang()">EN</button>
+          <div style="width:38px;height:38px;border-radius:19px;background:linear-gradient(135deg,var(--g2),var(--g4));display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer" title="Profile">👨‍🌾</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="lang-btn" id="lang-btn2" onclick="cycleLang()">EN</button>
-        <div style="width:36px;height:36px;border-radius:18px;background:var(--green3);display:flex;align-items:center;justify-content:center;font-size:18px">👨‍🌾</div>
-      </div>
+      <div class="content" id="main-content"></div>
     </div>
-    <div class="content" id="main-content"></div>
   </div>
 </div>
-</div>
 
-<div class="modal-overlay" id="field-modal" style="display:none" onclick="closeModal()">
-  <div class="modal" onclick="event.stopPropagation()" id="modal-inner"></div>
+<div class="modal-overlay" id="fmodal" style="display:none" onclick="closeMod()">
+  <div class="modal" onclick="event.stopPropagation()" id="fmodal-inner"></div>
 </div>
 
 <script>
-// ── USER DATA ──────────────────────────────────────────────────────────────────
-const USER = {name:'',phone:'',email:'',languages:[],state:'West Bengal',city:'Kharagpur',pin:'721301'};
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const U={name:'',phone:'',email:'',langs:[],state:'West Bengal',city:'Kharagpur',pin:'721301',apiKey:'',wx:null,isLogin:false};
+let lang='en', tab='home', chatMsgs=[], mktF='All', mktQ='', obMode='signup';
+let otpTimerInt=null;
 
-// ── INDIAN LANGUAGES ──────────────────────────────────────────────────────────
-const INDIAN_LANGS = [
-  {code:'hi',name:'Hindi',native:'हिन्दी',flag:'🇮🇳'},
-  {code:'bn',name:'Bengali',native:'বাংলা',flag:'🏳'},
-  {code:'te',name:'Telugu',native:'తెలుగు',flag:'🏳'},
-  {code:'mr',name:'Marathi',native:'मराठी',flag:'🏳'},
-  {code:'ta',name:'Tamil',native:'தமிழ்',flag:'🏳'},
-  {code:'gu',name:'Gujarati',native:'ગુજરાતી',flag:'🏳'},
-  {code:'kn',name:'Kannada',native:'ಕನ್ನಡ',flag:'🏳'},
-  {code:'ml',name:'Malayalam',native:'മലയാളം',flag:'🏳'},
-  {code:'pa',name:'Punjabi',native:'ਪੰਜਾਬੀ',flag:'🏳'},
-  {code:'or',name:'Odia',native:'ଓଡ଼ିଆ',flag:'🏳'},
-  {code:'as',name:'Assamese',native:'অসমীয়া',flag:'🏳'},
-  {code:'en',name:'English',native:'English',flag:'🇬🇧'},
+/* ══════════════════════════════════════════
+   TRANSLATIONS — all 12 languages
+══════════════════════════════════════════ */
+const T={
+  en:{home:"Home",fields:"Fields",weather:"Weather",market:"Market",ai:"KisanAI",
+    gm:"Good Morning",ga:"Good Afternoon",ge:"Good Evening",farmer:"Farmer",
+    moisture:"Avg Moisture",alerts:"Alerts",my_fields:"My Fields",view_all:"View all",
+    crop_health:"Crop Health",last_irr:"Last irrigated",optimal:"Optimal",refill:"Needs Water",full:"Full",
+    cloudy:"Mostly Cloudy",feels:"Feels like",uv:"UV Index",rise:"Sunrise",set:"Sunset",
+    forecast:"7-Day Forecast",tips:"Farming Advisory",mkt_title:"Market Prices",
+    mkt_sub:"Live mandi rates",search:"Search crop...",unit:"₹/quintal",
+    stable:"Stable",gainer:"TOP GAINER",loser:"TOP FALL",
+    ai_title:"KisanAI Assistant",ai_sub:"Ask in any Indian language",
+    ai_ph:"Ask about crops, weather, market...",
+    ai_hi:"Namaste! I'm KisanAI 🌾 Ask me anything about farming — crop advice, irrigation, pest management or market prices. I reply in any Indian language!",
+    sugg:["When to irrigate?","Crop disease help?","Best fertilizer?","Market prices today?"],
+    fd:"Fertilizer Due",pr:"Pest Risk",low:"Low",days5:"In 5 days",irr:"💧 Schedule Irrigation",
+    no_key:"API key not set.",rain:"Rain",pc:"Partly Cloudy",sunny:"Sunny"},
+  hi:{home:"होम",fields:"खेत",weather:"मौसम",market:"बाज़ार",ai:"किसानAI",
+    gm:"सुप्रभात",ga:"नमस्कार",ge:"शुभ संध्या",farmer:"किसान",
+    moisture:"औसत नमी",alerts:"अलर्ट",my_fields:"मेरे खेत",view_all:"सभी देखें",
+    crop_health:"फसल स्वास्थ्य",last_irr:"अंतिम सिंचाई",optimal:"उत्तम",refill:"पानी चाहिए",full:"पूर्ण",
+    cloudy:"बादल",feels:"महसूस",uv:"UV सूचक",rise:"सूर्योदय",set:"सूर्यास्त",
+    forecast:"7 दिन का पूर्वानुमान",tips:"कृषि सलाह",mkt_title:"मंडी भाव",
+    mkt_sub:"लाइव मंडी रेट",search:"फसल खोजें...",unit:"₹/क्विंटल",
+    stable:"स्थिर",gainer:"सबसे ऊपर",loser:"सबसे नीचे",
+    ai_title:"किसानAI सहायक",ai_sub:"किसी भी भाषा में पूछें",
+    ai_ph:"फसल, मौसम, बाज़ार के बारे में पूछें...",
+    ai_hi:"नमस्ते! मैं किसानAI हूँ 🌾 फसल सलाह, सिंचाई, कीट प्रबंधन, बाज़ार भाव — हिंदी या किसी भी भाषा में पूछें!",
+    sugg:["सिंचाई कब करें?","फसल रोग?","सबसे अच्छी खाद?","आज मंडी भाव?"],
+    fd:"खाद की तारीख",pr:"कीट जोखिम",low:"कम",days5:"5 दिन में",irr:"💧 सिंचाई शेड्यूल",
+    no_key:"API key सेट नहीं।",rain:"बारिश",pc:"आंशिक बादल",sunny:"धूप"},
+  bn:{home:"হোম",fields:"মাঠ",weather:"আবহাওয়া",market:"বাজার",ai:"কিসানAI",
+    gm:"শুভ সকাল",ga:"শুভ বিকাল",ge:"শুভ সন্ধ্যা",farmer:"কৃষক",
+    moisture:"গড় আর্দ্রতা",alerts:"সতর্কতা",my_fields:"আমার মাঠ",view_all:"সব দেখুন",
+    crop_health:"ফসলের স্বাস্থ্য",last_irr:"শেষ সেচ",optimal:"সর্বোত্তম",refill:"পানি লাগবে",full:"পরিপূর্ণ",
+    cloudy:"মেঘলা",feels:"অনুভূত",uv:"UV সূচক",rise:"সূর্যোদয়",set:"সূর্যাস্ত",
+    forecast:"৭ দিনের পূর্বাভাস",tips:"কৃষি পরামর্শ",mkt_title:"বাজার মূল্য",
+    mkt_sub:"লাইভ মান্ডি রেট",search:"ফসল খুঁজুন...",unit:"₹/কুইন্টাল",
+    stable:"স্থিতিশীল",gainer:"শীর্ষ লাভজনক",loser:"সর্বাধিক পতন",
+    ai_title:"কিসানAI সহায়ক",ai_sub:"যেকোনো ভারতীয় ভাষায় জিজ্ঞেস করুন",
+    ai_ph:"ফসল, আবহাওয়া, বাজার সম্পর্কে জিজ্ঞেস করুন...",
+    ai_hi:"নমস্কার! আমি কিসানAI 🌾 ফসলের পরামর্শ, সেচ, কীটপতঙ্গ, বাজার মূল্য — বাংলায় বা যেকোনো ভাষায় জিজ্ঞেস করুন!",
+    sugg:["কখন সেচ দেবো?","ফসলের রোগ?","সেরা সার?","আজকের বাজার মূল্য?"],
+    fd:"সার দেওয়ার সময়",pr:"কীটপতঙ্গ ঝুঁকি",low:"কম",days5:"৫ দিনে",irr:"💧 সেচ নির্ধারণ",
+    no_key:"API key সেট নেই।",rain:"বৃষ্টি",pc:"আংশিক মেঘলা",sunny:"রৌদ্রোজ্জ্বল"},
+  te:{home:"హోమ్",fields:"పొలాలు",weather:"వాతావరణం",market:"మార్కెట్",ai:"రైతుAI",
+    gm:"శుభోదయం",ga:"నమస్కారం",ge:"శుభ సాయంత్రం",farmer:"రైతు",
+    moisture:"సగటు తేమ",alerts:"హెచ్చరికలు",my_fields:"నా పొలాలు",view_all:"అన్నీ చూడండి",
+    crop_health:"పంట ఆరోగ్యం",last_irr:"చివరి నీటిపారుదల",optimal:"అనుకూలం",refill:"నీరు కావాలి",full:"నిండు",
+    cloudy:"మేఘావృతం",feels:"అనిపిస్తుంది",uv:"UV సూచిక",rise:"సూర్యోదయం",set:"సూర్యాస్తమయం",
+    forecast:"7 రోజుల సూచన",tips:"వ్యవసాయ సలహా",mkt_title:"మార్కెట్ ధరలు",
+    mkt_sub:"లైవ్ మండి రేట్లు",search:"పంట వెతకండి...",unit:"₹/క్వింటాల్",
+    stable:"స్థిరం",gainer:"అత్యధిక లాభం",loser:"అత్యధిక నష్టం",
+    ai_title:"రైతుAI సహాయకుడు",ai_sub:"ఏ భాషలోనైనా అడగండి",
+    ai_ph:"పంటలు, వాతావరణం గురించి అడగండి...",
+    ai_hi:"నమస్కారం! నేను రైతుAI 🌾 తెలుగులో లేదా ఏ భాషలోనైనా సరే పంట సలహా అడగండి!",
+    sugg:["నీరు ఎప్పుడు?","పంట వ్యాధి?","ఎరువు ఏది?","నేటి మండి ధర?"],
+    fd:"ఎరువు గడువు",pr:"కీటక ప్రమాదం",low:"తక్కువ",days5:"5 రోజుల్లో",irr:"💧 నీటిపారుదల",
+    no_key:"API key సెట్ కాలేదు.",rain:"వర్షం",pc:"పాక్షిక మేఘాలు",sunny:"ఎండ"},
+  mr:{home:"होम",fields:"शेतं",weather:"हवामान",market:"बाजार",ai:"किसानAI",
+    gm:"सुप्रभात",ga:"नमस्कार",ge:"शुभ संध्याकाळ",farmer:"शेतकरी",
+    moisture:"सरासरी ओलावा",alerts:"इशारे",my_fields:"माझी शेतं",view_all:"सर्व पहा",
+    crop_health:"पीक आरोग्य",last_irr:"शेवटचे सिंचन",optimal:"उत्तम",refill:"पाणी द्या",full:"पूर्ण",
+    cloudy:"ढगाळ",feels:"जाणवते",uv:"UV निर्देशांक",rise:"सूर्योदय",set:"सूर्यास्त",
+    forecast:"7 दिवसांचा अंदाज",tips:"शेती सल्ला",mkt_title:"बाजार भाव",
+    mkt_sub:"लाइव्ह मंडी दर",search:"पीक शोधा...",unit:"₹/क्विंटल",
+    stable:"स्थिर",gainer:"सर्वोच्च नफा",loser:"सर्वाधिक घट",
+    ai_title:"किसानAI सहाय्यक",ai_sub:"कोणत्याही भाषेत विचारा",
+    ai_ph:"पीक, हवामान, बाजाराबद्दल विचारा...",
+    ai_hi:"नमस्कार! मी किसानAI आहे 🌾 मराठीत किंवा कोणत्याही भाषेत शेती सल्ला विचारा!",
+    sugg:["सिंचन कधी?","पीक रोग?","उत्तम खत?","आजचा बाजार भाव?"],
+    fd:"खताची तारीख",pr:"कीड धोका",low:"कमी",days5:"5 दिवसात",irr:"💧 सिंचन",
+    no_key:"API key सेट नाही.",rain:"पाऊस",pc:"अंशतः ढगाळ",sunny:"ऊन"},
+  ta:{home:"முகப்பு",fields:"வயல்கள்",weather:"வானிலை",market:"சந்தை",ai:"விவசாயிAI",
+    gm:"காலை வணக்கம்",ga:"மதிய வணக்கம்",ge:"மாலை வணக்கம்",farmer:"விவசாயி",
+    moisture:"சராசரி ஈரம்",alerts:"எச்சரிக்கைகள்",my_fields:"என் வயல்கள்",view_all:"அனைத்தும் காட்டு",
+    crop_health:"பயிர் ஆரோக்கியம்",last_irr:"கடைசி நீர்",optimal:"சிறந்தது",refill:"நீர் வேண்டும்",full:"முழு",
+    cloudy:"மேகமூட்டம்",feels:"உணர்வு",uv:"UV குறியீடு",rise:"சூர்யோதயம்",set:"சூர்யாஸ்தமனம்",
+    forecast:"7 நாள் முன்னறிவிப்பு",tips:"விவசாய ஆலோசனை",mkt_title:"சந்தை விலை",
+    mkt_sub:"நேரடி மண்டி விலை",search:"பயிர் தேடு...",unit:"₹/குவிண்டால்",
+    stable:"நிலையான",gainer:"மிக உயர்வு",loser:"மிக வீழ்ச்சி",
+    ai_title:"விவசாயிAI உதவியாளர்",ai_sub:"எந்த மொழியிலும் கேளுங்கள்",
+    ai_ph:"பயிர், வானிலை பற்றி கேளுங்கள்...",
+    ai_hi:"வணக்கம்! நான் விவசாயிAI 🌾 தமிழில் அல்லது எந்த மொழியிலும் விவசாய கேள்விகள் கேளுங்கள்!",
+    sugg:["நீர் எப்போது?","பயிர் நோய்?","சிறந்த உரம்?","இன்றைய விலை?"],
+    fd:"உர தேதி",pr:"பூச்சி அபாயம்",low:"குறைவு",days5:"5 நாட்களில்",irr:"💧 நீர்ப்பாசனம்",
+    no_key:"API key இல்லை.",rain:"மழை",pc:"பகுதி மேகம்",sunny:"வெயில்"},
+  gu:{home:"હોમ",fields:"ખેતર",weather:"હવામાન",market:"બજાર",ai:"ખેડૂતAI",
+    gm:"સુપ્રભાત",ga:"નમસ્કાર",ge:"શુભ સાંજ",farmer:"ખેડૂત",
+    moisture:"સરેરાશ ભેજ",alerts:"ચેતવણી",my_fields:"મારા ખેતર",view_all:"બધા જુઓ",
+    crop_health:"પાક સ્વાસ્થ્ય",last_irr:"છેલ્લું સિંચન",optimal:"ઉત્તમ",refill:"પાણી આપો",full:"ભર્યો",
+    cloudy:"વાદળ",feels:"લાગે",uv:"UV",rise:"સૂર્યોદય",set:"સૂર્યાસ્ત",
+    forecast:"7 દિવસ",tips:"ખેતી સલાહ",mkt_title:"બજાર ભાવ",
+    mkt_sub:"લાઇવ ભાવ",search:"પાક શોધો...",unit:"₹/ક્વિન્ટલ",
+    stable:"સ્થિર",gainer:"ટોચ ઉદય",loser:"ટોચ ઘટ",
+    ai_title:"ખેડૂતAI સહાયક",ai_sub:"ગુજરાતીમાં અથવા કોઈ ભાષામાં",
+    ai_ph:"પાક, હવામાન, બજાર...",
+    ai_hi:"નમસ્તે! હું ખેડૂતAI છું 🌾 ગુજરાતી સહિત કોઈ ભાષામાં ખેતી સવાલ પૂછો!",
+    sugg:["સિંચન ક્યારે?","પાક રોગ?","ખાતર?","ભાવ?"],
+    fd:"ખાતર",pr:"જીવાત",low:"ઓછું",days5:"5 દિ.",irr:"💧 સિંચન",
+    no_key:"API key નથી.",rain:"વરસાદ",pc:"વાદળ",sunny:"તડકો"},
+  kn:{home:"ಮನೆ",fields:"ಹೊಲ",weather:"ಹವಾಮಾನ",market:"ಮಾರುಕಟ್ಟೆ",ai:"ರೈತAI",
+    gm:"ಶುಭೋದಯ",ga:"ನಮಸ್ಕಾರ",ge:"ಶುಭ ಸಂಜೆ",farmer:"ರೈತ",
+    moisture:"ತೇವ",alerts:"ಎಚ್ಚರಿಕೆ",my_fields:"ನನ್ನ ಹೊಲ",view_all:"ಎಲ್ಲ ನೋಡಿ",
+    crop_health:"ಬೆಳೆ ಆರೋಗ್ಯ",last_irr:"ಕೊನೆ ನೀರು",optimal:"ಉತ್ತಮ",refill:"ನೀರು ಬೇಕು",full:"ತುಂಬಿದೆ",
+    cloudy:"ಮೋಡ",feels:"ಭಾಸ",uv:"UV",rise:"ಸೂರ್ಯೋದಯ",set:"ಸೂರ್ಯಾಸ್ತ",
+    forecast:"7 ದಿನ",tips:"ಕೃಷಿ ಸಲಹೆ",mkt_title:"ಮಾರುಕಟ್ಟೆ ಬೆಲೆ",
+    mkt_sub:"ಲೈವ್ ಮಂಡಿ",search:"ಬೆಳೆ ಹುಡುಕಿ...",unit:"₹/ಕ್ವಿಂಟಾಲ್",
+    stable:"ಸ್ಥಿರ",gainer:"ಉನ್ನತ",loser:"ಕುಸಿತ",
+    ai_title:"ರೈತAI",ai_sub:"ಕನ್ನಡದಲ್ಲಿ ಅಥವಾ ಯಾವ ಭಾಷೆಯಲ್ಲೂ",
+    ai_ph:"ಬೆಳೆ, ಹವಾಮಾನ...",
+    ai_hi:"ನಮಸ್ಕಾರ! ನಾನು ರೈತAI 🌾 ಕನ್ನಡ ಸೇರಿ ಯಾವ ಭಾಷೆಯಲ್ಲೂ ಕೃಷಿ ಸಲಹೆ ಕೇಳಿ!",
+    sugg:["ನೀರಾವರಿ?","ರೋಗ?","ಗೊಬ್ಬರ?","ಬೆಲೆ?"],
+    fd:"ಗೊಬ್ಬರ",pr:"ಕೀಟ",low:"ಕಡಿಮೆ",days5:"5 ದಿನ",irr:"💧 ನೀರಾವರಿ",
+    no_key:"API key ಇಲ್ಲ.",rain:"ಮಳೆ",pc:"ಭಾಗಶಃ ಮೋಡ",sunny:"ಬಿಸಿಲು"},
+  ml:{home:"ഹോം",fields:"പാടം",weather:"കാലാവസ്ഥ",market:"മാർക്കറ്റ്",ai:"കർഷകAI",
+    gm:"സുപ്രഭാതം",ga:"നമസ്കാരം",ge:"ശുഭ സന്ധ്യ",farmer:"കർഷകൻ",
+    moisture:"ഈർപ്പം",alerts:"മുന്നറിയിപ്പ്",my_fields:"എന്റെ പാടം",view_all:"എല്ലാം",
+    crop_health:"വിള ആരോഗ്യം",last_irr:"കഴിഞ്ഞ നനവ്",optimal:"ഉത്തമം",refill:"വെള്ളം വേണം",full:"നിറഞ്ഞു",
+    cloudy:"മേഘം",feels:"തോന്നൽ",uv:"UV",rise:"സൂര്യോദയം",set:"അസ്തമയം",
+    forecast:"7 ദിവസം",tips:"കൃഷി ഉപദേശം",mkt_title:"വിലകൾ",
+    mkt_sub:"മണ്ടി നിരക്ക്",search:"വിള തിരയൂ...",unit:"₹/ക്വിന്റൽ",
+    stable:"സ്ഥിരം",gainer:"ഉയർന്നത്",loser:"താഴ്ന്നത്",
+    ai_title:"കർഷകAI",ai_sub:"ഏത് ഭാഷയിലും ചോദിക്കൂ",
+    ai_ph:"വിള, കാലാവസ്ഥ...",
+    ai_hi:"നമസ്കാരം! ഞാൻ കർഷകAI 🌾 മലയാളത്തിൽ ഉൾപ്പെടെ ഏത് ഭാഷയിലും കൃഷി ചോദ്യങ്ങൾ ചോദിക്കൂ!",
+    sugg:["നനവ് എപ്പോൾ?","ദ്രോഹം?","വളം?","വില?"],
+    fd:"വളം",pr:"കീടം",low:"കുറഞ്ഞ",days5:"5 ദിനം",irr:"💧 നനവ്",
+    no_key:"API key ഇല്ല.",rain:"മഴ",pc:"ഭാഗിക മേഘം",sunny:"വെയിൽ"},
+  pa:{home:"ਹੋਮ",fields:"ਖੇਤ",weather:"ਮੌਸਮ",market:"ਬਾਜ਼ਾਰ",ai:"ਕਿਸਾਨAI",
+    gm:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ",ga:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ",ge:"ਸ਼ੁਭ ਸ਼ਾਮ",farmer:"ਕਿਸਾਨ",
+    moisture:"ਔਸਤ ਨਮੀ",alerts:"ਚੇਤਾਵਨੀ",my_fields:"ਮੇਰੇ ਖੇਤ",view_all:"ਸਭ ਦੇਖੋ",
+    crop_health:"ਫ਼ਸਲ ਸਿਹਤ",last_irr:"ਪਿਛਲੀ ਸਿੰਚਾਈ",optimal:"ਵਧੀਆ",refill:"ਪਾਣੀ ਚਾਹੀਦਾ",full:"ਭਰਿਆ",
+    cloudy:"ਬੱਦਲਵਾਈ",feels:"ਮਹਿਸੂਸ",uv:"UV",rise:"ਸੂਰਜ ਚੜ੍ਹਨਾ",set:"ਸੂਰਜ ਛਿਪਣਾ",
+    forecast:"7 ਦਿਨ",tips:"ਖੇਤੀ ਸਲਾਹ",mkt_title:"ਮੰਡੀ ਭਾਅ",
+    mkt_sub:"ਲਾਈਵ ਭਾਅ",search:"ਫ਼ਸਲ ਲੱਭੋ...",unit:"₹/ਕੁਇੰਟਲ",
+    stable:"ਸਥਿਰ",gainer:"ਸਭ ਤੋਂ ਵੱਧ",loser:"ਸਭ ਤੋਂ ਘੱਟ",
+    ai_title:"ਕਿਸਾਨAI",ai_sub:"ਪੰਜਾਬੀ ਜਾਂ ਕੋਈ ਭਾਸ਼ਾ",
+    ai_ph:"ਫ਼ਸਲ, ਮੌਸਮ...",
+    ai_hi:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਕਿਸਾਨAI ਹਾਂ 🌾 ਪੰਜਾਬੀ ਸਮੇਤ ਕਿਸੇ ਵੀ ਭਾਸ਼ਾ ਵਿੱਚ ਖੇਤੀ ਸਵਾਲ ਪੁੱਛੋ!",
+    sugg:["ਸਿੰਚਾਈ ਕਦੋਂ?","ਫ਼ਸਲ ਰੋਗ?","ਖਾਦ?","ਭਾਅ?"],
+    fd:"ਖਾਦ",pr:"ਕੀੜੇ",low:"ਘੱਟ",days5:"5 ਦਿਨ",irr:"💧 ਸਿੰਚਾਈ",
+    no_key:"API key ਨਹੀਂ.",rain:"ਮੀਂਹ",pc:"ਕੁਝ ਬੱਦਲ",sunny:"ਧੁੱਪ"},
+  or:{home:"ହୋମ",fields:"ଜମି",weather:"ଆବହାୱା",market:"ବଜାର",ai:"କୃଷକAI",
+    gm:"ଶୁଭ ସକାଳ",ga:"ନମସ୍କାର",ge:"ଶୁଭ ସଂଧ୍ୟା",farmer:"କୃଷକ",
+    moisture:"ଆର୍ଦ୍ରତା",alerts:"ସତର୍କ",my_fields:"ମୋ ଜମି",view_all:"ସବୁ",
+    crop_health:"ଫସଲ ସ୍ୱାସ୍ଥ୍ୟ",last_irr:"ଶେଷ ଜଳ",optimal:"ଉତ୍ତମ",refill:"ଜଳ ଦରକାର",full:"ପୂର୍ଣ",
+    cloudy:"ମେଘ",feels:"ଅନୁଭୂତ",uv:"UV",rise:"ସୂର୍ଯ୍ୟୋଦୟ",set:"ସୂର୍ଯ୍ୟାସ୍ତ",
+    forecast:"7 ଦିନ",tips:"କୃଷି ପରାମର୍ଶ",mkt_title:"ବଜାର ମୂଲ୍ୟ",
+    mkt_sub:"ଲାଇଭ ମଣ୍ଡି",search:"ଫସଲ ଖୋଜ...",unit:"₹/କ୍ୱିଣ୍ଟାଲ",
+    stable:"ସ୍ଥିର",gainer:"ସର୍ବୋଚ୍ଚ",loser:"ସର୍ବନିମ୍ନ",
+    ai_title:"କୃଷକAI",ai_sub:"ଯେ କୌଣସି ଭାଷା",
+    ai_ph:"ଫସଲ, ଆବହାୱା...",
+    ai_hi:"ନମସ୍କାର! ମୁଁ କୃଷକAI 🌾 ଓଡ଼ିଆ ସହ ଯେ କୌଣସି ଭାଷାରେ ଚାଷ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!",
+    sugg:["ଜଳ କେବେ?","ରୋଗ?","ସାର?","ମୂଲ୍ୟ?"],
+    fd:"ସାର",pr:"କୀଟ",low:"କମ",days5:"5 ଦିନ",irr:"💧 ଜଳ",
+    no_key:"API key ନାହିଁ.",rain:"ବର୍ଷା",pc:"ଆଂଶିକ",sunny:"ଧୂପ"},
+  as:{home:"হোম",fields:"পথাৰ",weather:"বতৰ",market:"বজাৰ",ai:"কৃষকAI",
+    gm:"শুভ ৰাতিপুৱা",ga:"নমস্কাৰ",ge:"শুভ সন্ধিয়া",farmer:"কৃষক",
+    moisture:"আৰ্দ্ৰতা",alerts:"সতৰ্কতা",my_fields:"মোৰ পথাৰ",view_all:"সকলো",
+    crop_health:"শস্যৰ স্বাস্থ্য",last_irr:"শেষ পানী",optimal:"উত্তম",refill:"পানী লাগে",full:"পূৰ্ণ",
+    cloudy:"মেঘাচ্ছন্ন",feels:"অনুভৱ",uv:"UV",rise:"সূৰ্যোদয়",set:"সূৰ্যাস্ত",
+    forecast:"৭ দিন",tips:"কৃষি পৰামৰ্শ",mkt_title:"বজাৰ মূল্য",
+    mkt_sub:"লাইভ মণ্ডি",search:"শস্য বিচাৰক...",unit:"₹/কুইন্টাল",
+    stable:"স্থিৰ",gainer:"সৰ্বোচ্চ",loser:"সৰ্বনিম্ন",
+    ai_title:"কৃষকAI",ai_sub:"যিকোনো ভাষা",
+    ai_ph:"শস্য, বতৰ...",
+    ai_hi:"নমস্কাৰ! মই কৃষকAI 🌾 অসমীয়া সহ যিকোনো ভাষাত খেতি সম্পৰ্কে সোধক!",
+    sugg:["পানী কেতিয়া?","ৰোগ?","সাৰ?","মূল্য?"],
+    fd:"সাৰ",pr:"পোক",low:"কম",days5:"৫ দিন",irr:"💧 পানী",
+    no_key:"API key নাই.",rain:"বৰষুণ",pc:"আংশিক মেঘ",sunny:"ৰ'দ"},
+};
+function t(k){return(T[lang]||T.en)[k]||T.en[k]||k}
+
+const LANGS=[
+  {c:'hi',n:'Hindi',v:'हिन्दी'},{c:'bn',n:'Bengali',v:'বাংলা'},
+  {c:'te',n:'Telugu',v:'తెలుగు'},{c:'mr',n:'Marathi',v:'मराठी'},
+  {c:'ta',n:'Tamil',v:'தமிழ்'},{c:'gu',n:'Gujarati',v:'ગુજરાતી'},
+  {c:'kn',n:'Kannada',v:'ಕನ್ನಡ'},{c:'ml',n:'Malayalam',v:'മലയാളം'},
+  {c:'pa',n:'Punjabi',v:'ਪੰਜਾਬੀ'},{c:'or',n:'Odia',v:'ଓଡ଼ିଆ'},
+  {c:'as',n:'Assamese',v:'অসমীয়া'},{c:'en',n:'English',v:'English'},
 ];
 
-// ── TRANSLATIONS (en + bn + hi) ───────────────────────────────────────────────
-const T = {
-  en:{home:"Home",fields:"Fields",weather:"Weather",market:"Market",ai:"KisanAI",
-    good_morning:"Good Morning",good_afternoon:"Good Afternoon",good_evening:"Good Evening",
-    farmer:"Farmer",avg_moisture:"Avg Moisture",alerts:"Alerts",your_fields:"Your Fields",
-    view_all:"View all",crop_health:"Crop Health",last_irr:"Last irrigated",
-    optimal:"Optimal",refill:"Refill",full:"Full",mostly_cloudy:"Mostly Cloudy",
-    feels_like:"Feels like",uv:"UV Index",sunrise:"Sunrise",sunset:"Sunset",
-    forecast:"7-Day Forecast",farm_tips:"Farming Advisory",market_title:"Market Prices",
-    market_sub:"Live mandi rates · Updated today",search:"Search crop...",price_unit:"₹/quintal",
-    stable:"Stable",top_gainer:"TOP GAINER",top_fall:"TOP FALL",
-    ai_title:"KisanAI Assistant",ai_sub:"AI-powered · Ask in your language",
-    ai_placeholder:"Ask about crops, soil, weather, market...",
-    ai_greeting:"Namaste! I'm KisanAI 🌾 Ask me anything about farming — crop advice, irrigation, pest management, market prices and more!",
-    suggestions:["When to irrigate?","Wheat disease?","Best fertilizer?","Market prices?"],
-    fert_due:"Fertilizer Due",pest_risk:"Pest Risk",low:"Low",in5days:"In 5 days",
-    schedule_irr:"💧 Schedule Irrigation"},
-  bn:{home:"হোম",fields:"মাঠ",weather:"আবহাওয়া",market:"বাজার",ai:"কিসানAI",
-    good_morning:"শুভ সকাল",good_afternoon:"শুভ বিকাল",good_evening:"শুভ সন্ধ্যা",
-    farmer:"কৃষক",avg_moisture:"গড় আর্দ্রতা",alerts:"সতর্কতা",your_fields:"আপনার মাঠ",
-    view_all:"সব দেখুন",crop_health:"ফসলের স্বাস্থ্য",last_irr:"শেষ সেচ",
-    optimal:"সর্বোত্তম",refill:"পুনরায় পূরণ",full:"পরিপূর্ণ",mostly_cloudy:"মেঘলা",
-    feels_like:"অনুভূত",uv:"UV সূচক",sunrise:"সূর্যোদয়",sunset:"সূর্যাস্ত",
-    forecast:"৭ দিনের পূর্বাভাস",farm_tips:"কৃষি পরামর্শ",market_title:"বাজার মূল্য",
-    market_sub:"লাইভ মান্ডি রেট · আজ আপডেট",search:"ফসল খুঁজুন...",price_unit:"₹/কুইন্টাল",
-    stable:"স্থিতিশীল",top_gainer:"শীর্ষ লাভজনক",top_fall:"সর্বাধিক পতন",
-    ai_title:"কিসানAI সহায়ক",ai_sub:"AI চালিত · আপনার ভাষায় জিজ্ঞেস করুন",
-    ai_placeholder:"ফসল, মাটি, আবহাওয়া সম্পর্কে জিজ্ঞেস করুন...",
-    ai_greeting:"নমস্কার! আমি কিসানAI 🌾 ফসলের পরামর্শ, সেচ, বাজার মূল্য — যেকোনো প্রশ্ন করুন!",
-    suggestions:["কখন সেচ দেবো?","গমের রোগ?","সেরা সার?","বাজার মূল্য?"],
-    fert_due:"সার দেওয়ার সময়",pest_risk:"কীটপতঙ্গ ঝুঁকি",low:"কম",in5days:"৫ দিনে",
-    schedule_irr:"💧 সেচ নির্ধারণ করুন"},
-  hi:{home:"होम",fields:"खेत",weather:"मौसम",market:"बाज़ार",ai:"किसानAI",
-    good_morning:"सुप्रभात",good_afternoon:"नमस्कार",good_evening:"शुभ संध्या",
-    farmer:"किसान",avg_moisture:"औसत नमी",alerts:"अलर्ट",your_fields:"आपके खेत",
-    view_all:"सभी देखें",crop_health:"फसल स्वास्थ्य",last_irr:"अंतिम सिंचाई",
-    optimal:"उत्तम",refill:"पानी दें",full:"पूर्ण",mostly_cloudy:"बादल",
-    feels_like:"महसूस",uv:"UV सूचकांक",sunrise:"सूर्योदय",sunset:"सूर्यास्त",
-    forecast:"7 दिन का पूर्वानुमान",farm_tips:"कृषि सलाह",market_title:"बाज़ार भाव",
-    market_sub:"लाइव मंडी रेट · आज अपडेट",search:"फसल खोजें...",price_unit:"₹/क्विंटल",
-    stable:"स्थिर",top_gainer:"सबसे ऊपर",top_fall:"सबसे नीचे",
-    ai_title:"किसानAI सहायक",ai_sub:"AI चालित · अपनी भाषा में पूछें",
-    ai_placeholder:"फसल, मिट्टी, मौसम के बारे में पूछें...",
-    ai_greeting:"नमस्ते! मैं किसानAI हूँ 🌾 फसल सलाह, सिंचाई, बाज़ार भाव — कुछ भी पूछें!",
-    suggestions:["सिंचाई कब करें?","गेहूँ की बीमारी?","सबसे अच्छी खाद?","मंडी भाव?"],
-    fert_due:"खाद की तारीख",pest_risk:"कीट जोखिम",low:"कम",in5days:"5 दिन में",
-    schedule_irr:"💧 सिंचाई शेड्यूल"},
+/* ══ PIN Database ══ */
+const PINS={
+  '721301':{city:'Kharagpur',dist:'Paschim Medinipur',state:'West Bengal',temp:'33',wx:'Cloudy',hum:'76'},
+  '721302':{city:'Kharagpur',dist:'Paschim Medinipur',state:'West Bengal',temp:'33',wx:'Cloudy',hum:'76'},
+  '700001':{city:'Kolkata',dist:'Kolkata',state:'West Bengal',temp:'31',wx:'Partly Cloudy',hum:'80'},
+  '700016':{city:'Kolkata South',dist:'Kolkata',state:'West Bengal',temp:'31',wx:'Cloudy',hum:'79'},
+  '110001':{city:'New Delhi',dist:'Central Delhi',state:'Delhi',temp:'38',wx:'Sunny',hum:'45'},
+  '110044':{city:'Delhi NCR',dist:'South Delhi',state:'Delhi',temp:'37',wx:'Hazy',hum:'48'},
+  '400001':{city:'Mumbai',dist:'Mumbai City',state:'Maharashtra',temp:'29',wx:'Humid',hum:'88'},
+  '400053':{city:'Mumbai Suburban',dist:'Mumbai',state:'Maharashtra',temp:'29',wx:'Cloudy',hum:'85'},
+  '600001':{city:'Chennai',dist:'Chennai',state:'Tamil Nadu',temp:'35',wx:'Sunny',hum:'70'},
+  '500001':{city:'Hyderabad',dist:'Hyderabad',state:'Telangana',temp:'36',wx:'Hot',hum:'50'},
+  '380001':{city:'Ahmedabad',dist:'Ahmedabad',state:'Gujarat',temp:'40',wx:'Very Hot',hum:'30'},
+  '302001':{city:'Jaipur',dist:'Jaipur',state:'Rajasthan',temp:'42',wx:'Sunny',hum:'25'},
+  '226001':{city:'Lucknow',dist:'Lucknow',state:'Uttar Pradesh',temp:'37',wx:'Hot',hum:'55'},
+  '560001':{city:'Bengaluru',dist:'Bengaluru Urban',state:'Karnataka',temp:'28',wx:'Pleasant',hum:'65'},
+  '411001':{city:'Pune',dist:'Pune',state:'Maharashtra',temp:'32',wx:'Partly Cloudy',hum:'58'},
+  '160001':{city:'Chandigarh',dist:'Chandigarh',state:'Punjab',temp:'35',wx:'Sunny',hum:'42'},
+  '781001':{city:'Guwahati',dist:'Kamrup Metro',state:'Assam',temp:'30',wx:'Cloudy',hum:'82'},
+  '751001':{city:'Bhubaneswar',dist:'Khordha',state:'Odisha',temp:'34',wx:'Humid',hum:'72'},
+  '695001':{city:'Thiruvananthapuram',dist:'Thiruvananthapuram',state:'Kerala',temp:'31',wx:'Cloudy',hum:'85'},
+  '682001':{city:'Kochi',dist:'Ernakulam',state:'Kerala',temp:'30',wx:'Rainy',hum:'90'},
+  '248001':{city:'Dehradun',dist:'Dehradun',state:'Uttarakhand',temp:'29',wx:'Partly Cloudy',hum:'60'},
+  '800001':{city:'Patna',dist:'Patna',state:'Bihar',temp:'36',wx:'Hot',hum:'58'},
+  '492001':{city:'Raipur',dist:'Raipur',state:'Chhattisgarh',temp:'38',wx:'Sunny',hum:'45'},
+  '462001':{city:'Bhopal',dist:'Bhopal',state:'Madhya Pradesh',temp:'37',wx:'Sunny',hum:'42'},
+  '831001':{city:'Jamshedpur',dist:'East Singhbhum',state:'Jharkhand',temp:'34',wx:'Partly Cloudy',hum:'62'},
+  '572101':{city:'Tumkur',dist:'Tumkur',state:'Karnataka',temp:'30',wx:'Sunny',hum:'55'},
+  '641001':{city:'Coimbatore',dist:'Coimbatore',state:'Tamil Nadu',temp:'33',wx:'Partly Cloudy',hum:'65'},
 };
 
-// ── APP STATE ─────────────────────────────────────────────────────────────────
-let lang = 'en';
-let currentTab = 'home';
-let chatMessages = [];
-let marketFilter = 'All';
-let marketSearch = '';
-let obStep = 0;
+/* ══ FIELDS & MARKET DATA ══ */
+const FIELDS=[
+  {id:1,name:"North Plot",crop:"Rice",area:"2.4 ha",moisture:72,status:"O",health:88,irr:"2h ago",stage:"Tillering"},
+  {id:2,name:"South Field",crop:"Wheat",area:"1.8 ha",moisture:45,status:"R",health:62,irr:"1 day ago",stage:"Germination"},
+  {id:3,name:"East Block",crop:"Maize",area:"3.1 ha",moisture:91,status:"F",health:95,irr:"30 min ago",stage:"Flowering"},
+  {id:4,name:"West Garden",crop:"Tomato",area:"0.6 ha",moisture:58,status:"O",health:78,irr:"4h ago",stage:"Fruiting"},
+];
+const MKT=[
+  {crop:"Rice",price:2180,change:+45,trend:"up",icon:"🌾",cat:"Grains"},
+  {crop:"Wheat",price:2275,change:+12,trend:"up",icon:"🌿",cat:"Grains"},
+  {crop:"Potato",price:1450,change:-80,trend:"down",icon:"🥔",cat:"Vegetables"},
+  {crop:"Tomato",price:3200,change:+320,trend:"up",icon:"🍅",cat:"Vegetables"},
+  {crop:"Onion",price:2800,change:0,trend:"stable",icon:"🧅",cat:"Vegetables"},
+  {crop:"Mustard",price:5400,change:+120,trend:"up",icon:"🌻",cat:"Oilseeds"},
+  {crop:"Maize",price:1890,change:-30,trend:"down",icon:"🌽",cat:"Grains"},
+  {crop:"Jute",price:4600,change:+200,trend:"up",icon:"🪢",cat:"Fibre"},
+  {crop:"Brinjal",price:2100,change:+60,trend:"up",icon:"🍆",cat:"Vegetables"},
+  {crop:"Green Chilli",price:6800,change:-400,trend:"down",icon:"🌶",cat:"Spices"},
+];
+const WXD=[
+  {d:"Mon",ic:"☀",hi:34,lo:24},{d:"Tue",ic:"⛅",hi:31,lo:22},{d:"Wed",ic:"🌧",hi:27,lo:20},
+  {d:"Thu",ic:"🌧",hi:26,lo:19},{d:"Fri",ic:"⛅",hi:30,lo:22},{d:"Sat",ic:"☀",hi:35,lo:25},{d:"Sun",ic:"☀",hi:36,lo:26},
+];
 
-// ── ONBOARDING HELPERS ────────────────────────────────────────────────────────
-function goStep(n){
-  document.getElementById('ob'+obStep).classList.remove('active');
-  obStep=n;
-  document.getElementById('ob'+n).classList.add('active');
-  for(let i=0;i<5;i++) document.getElementById('p'+i).classList.toggle('done',i<n);
+/* ══════════════════════════════════════════
+   ONBOARDING ENGINE
+══════════════════════════════════════════ */
+let obHistory=[];
+function showStep(id){
+  document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const stepMap={
+    'step-login':1,'step-signup':1,'step-otp':2,'step-lang':3,
+    'step-loc':4,'step-api':5,'step-welcome':6
+  };
+  const n=stepMap[id]||1;
+  document.getElementById('ob-prog-fill').style.width=(n/6*100)+'%';
+  document.getElementById('ob-prog-label').textContent='Step '+n+' of 6';
+  obHistory.push(id);
   window.scrollTo(0,0);
 }
-
-// Build language grid
-function buildLangGrid(){
-  const grid=document.getElementById('lang-grid');
-  grid.innerHTML=INDIAN_LANGS.map(l=>`
-    <div class="lang-card" id="lc-${l.code}" onclick="toggleLangCard('${l.code}')">
-      <div>
-        <div class="lang-name">${l.name}</div>
-        <div class="lang-native">${l.native}</div>
-      </div>
-      <span class="lang-check">✓</span>
-    </div>`).join('');
-  // default select English
-  toggleLangCard('en');
+function obBack(){
+  obHistory.pop();
+  const prev=obHistory.pop();
+  if(prev) showStep(prev); else{document.getElementById('onboarding').style.display='none';document.getElementById('splash').style.display='flex';}
 }
-buildLangGrid();
-
-function toggleLangCard(code){
-  const el=document.getElementById('lc-'+code);
-  if(!el) return;
-  const idx=USER.languages.indexOf(code);
-  if(idx>-1){if(USER.languages.length>1){USER.languages.splice(idx,1);el.classList.remove('selected');}}
-  else{USER.languages.push(code);el.classList.add('selected');}
-  document.getElementById('lang-count').textContent=USER.languages.length;
+function showSignup(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('onboarding').style.display='flex';
+  obMode='signup'; obHistory=[];
+  showStep('step-signup');
+}
+function showLogin(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('onboarding').style.display='flex';
+  obMode='login'; obHistory=[];
+  showStep('step-login');
 }
 
-// OTP
-function otpNext(i){
-  const val=document.getElementById('otp'+i).value;
-  if(val&&i<5) document.getElementById('otp'+(i+1)).focus();
-  checkOTPFull();
-}
-function otpBack(i,e){
-  if(e.key==='Backspace'&&!document.getElementById('otp'+i).value&&i>0)
-    document.getElementById('otp'+(i-1)).focus();
-}
-function checkOTPFull(){
-  let full=true;
-  for(let i=0;i<6;i++) if(!document.getElementById('otp'+i).value) full=false;
-}
-function resendOTP(){alert('OTP resent to +91 '+USER.phone);}
-
-// PIN lookup simulation
-const PIN_DB={
-  '721301':{city:'Kharagpur',district:'Paschim Medinipur',state:'West Bengal',temp:'33°C',weather:'Cloudy',humidity:'76%'},
-  '700001':{city:'Kolkata',district:'Kolkata',state:'West Bengal',temp:'31°C',weather:'Partly Cloudy',humidity:'80%'},
-  '110001':{city:'New Delhi',district:'Central Delhi',state:'Delhi',temp:'38°C',weather:'Sunny',humidity:'45%'},
-  '400001':{city:'Mumbai',district:'Mumbai City',state:'Maharashtra',temp:'29°C',weather:'Humid',humidity:'88%'},
-  '600001':{city:'Chennai',district:'Chennai',state:'Tamil Nadu',temp:'35°C',weather:'Sunny',humidity:'70%'},
-  '500001':{city:'Hyderabad',district:'Hyderabad',state:'Telangana',temp:'36°C',weather:'Hot',humidity:'50%'},
-  '380001':{city:'Ahmedabad',district:'Ahmedabad',state:'Gujarat',temp:'40°C',weather:'Very Hot',humidity:'30%'},
-  '302001':{city:'Jaipur',district:'Jaipur',state:'Rajasthan',temp:'42°C',weather:'Sunny',humidity:'25%'},
-  '226001':{city:'Lucknow',district:'Lucknow',state:'Uttar Pradesh',temp:'37°C',weather:'Hot',humidity:'55%'},
-  '560001':{city:'Bengaluru',district:'Bengaluru Urban',state:'Karnataka',temp:'28°C',weather:'Pleasant',humidity:'65%'},
-};
-
-let pinTimeout=null;
-function lookupPin(val){
-  clearTimeout(pinTimeout);
-  document.getElementById('pin-loading').style.display='none';
-  document.getElementById('pin-found').style.display='none';
-  document.getElementById('pin-notfound').style.display='none';
-  document.getElementById('loc-preview').classList.remove('show');
-  if(val.length===6){
-    document.getElementById('pin-loading').style.display='block';
-    pinTimeout=setTimeout(()=>{
-      document.getElementById('pin-loading').style.display='none';
-      const d=PIN_DB[val];
-      if(d){
-        document.getElementById('pin-found').style.display='block';
-        document.getElementById('pin-found').textContent='✅ '+d.city+', '+d.district+', '+d.state;
-        document.getElementById('loc-details').innerHTML=`<strong>${d.city}</strong>, ${d.district}, ${d.state}`;
-        document.getElementById('loc-weather').innerHTML=`
-          <div style="display:flex;gap:16px;align-items:center">
-            <span style="font-size:28px">⛅</span>
-            <div>
-              <div style="font-size:18px;font-weight:800;color:var(--green)">${d.temp}</div>
-              <div style="font-size:12px;color:var(--muted)">${d.weather} · Humidity ${d.humidity}</div>
-            </div>
-          </div>`;
-        document.getElementById('loc-preview').classList.add('show');
-        document.getElementById('inp-city').value=d.city;
-        document.getElementById('inp-state').value=d.state;
-        USER.city=d.city; USER.state=d.state; USER.pin=val;
-        USER.weatherData=d;
-      } else {
-        document.getElementById('pin-notfound').style.display='block';
-      }
-    },800);
+/* OTP boxes */
+function buildOTPBoxes(){
+  const wrap=document.getElementById('otp-boxes');
+  wrap.innerHTML='';
+  for(let i=0;i<6;i++){
+    const inp=document.createElement('input');
+    inp.className='otp-box';inp.maxLength=1;inp.type='tel';inp.id='ob'+i;
+    inp.oninput=()=>{if(inp.value){inp.classList.add('filled');if(i<5)document.getElementById('ob'+(i+1)).focus();}else inp.classList.remove('filled');}
+    inp.onkeydown=(e)=>{if(e.key==='Backspace'&&!inp.value&&i>0)document.getElementById('ob'+(i-1)).focus();}
+    wrap.appendChild(inp);
   }
 }
+buildOTPBoxes();
 
-// ── ONBOARDING STEPS ──────────────────────────────────────────────────────────
+let otpSecs=30;
+function startOTPTimer(){
+  clearInterval(otpTimerInt);otpSecs=30;
+  const el=document.getElementById('otp-timer');
+  const rb=document.getElementById('resend-btn');
+  rb.style.opacity='0.4';rb.style.cursor='default';
+  otpTimerInt=setInterval(()=>{
+    otpSecs--;
+    if(el)el.textContent='Resend in '+otpSecs+'s';
+    if(otpSecs<=0){clearInterval(otpTimerInt);if(el)el.textContent='';rb.style.opacity='1';rb.style.cursor='pointer';}
+  },1000);
+}
+function resendOTP(){if(otpSecs>0)return;startOTPTimer();alert('OTP resent! (Demo: 123456)');}
+
+/* Step actions */
 function doSignup(){
   let ok=true;
-  const name=document.getElementById('inp-name').value.trim();
-  const phone=document.getElementById('inp-phone').value.trim();
-  const email=document.getElementById('inp-email').value.trim();
-  if(!name){show('err-name');ok=false;}else hide('err-name');
-  if(!/^\d{10}$/.test(phone)){show('err-phone');ok=false;}else hide('err-phone');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){show('err-email');ok=false;}else hide('err-email');
-  if(!ok) return;
-  USER.name=name; USER.phone=phone; USER.email=email;
-  document.getElementById('otp-sub').textContent='We sent a 6-digit OTP to +91 '+phone;
-  goStep(2);
+  const name=document.getElementById('su-name').value.trim();
+  const phone=document.getElementById('su-phone').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  if(!name){showE('su-name','su-name-err');ok=false;}else hideE('su-name','su-name-err');
+  if(!/^\d{10}$/.test(phone)){showE('su-phone','su-phone-err');ok=false;}else hideE('su-phone','su-phone-err');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showE('su-email','su-email-err');ok=false;}else hideE('su-email','su-email-err');
+  if(!ok)return;
+  U.name=name;U.phone=phone;U.email=email;
+  document.getElementById('otp-sent-to').textContent='OTP sent to +91 '+phone+' and '+email;
+  startOTPTimer();showStep('step-otp');
 }
-
+function doLogin(){
+  const phone=document.getElementById('li-phone').value.trim();
+  if(!/^\d{10}$/.test(phone)){showE('li-phone','li-phone-err');return;}
+  hideE('li-phone','li-phone-err');
+  U.phone=phone;
+  document.getElementById('otp-sent-to').textContent='OTP sent to +91 '+phone;
+  startOTPTimer();showStep('step-otp');
+}
 function verifyOTP(){
-  let otp='';
-  for(let i=0;i<6;i++) otp+=document.getElementById('otp'+i).value;
+  let otp='';for(let i=0;i<6;i++)otp+=(document.getElementById('ob'+i)?.value||'');
   if(otp.length<6){alert('Please enter the 6-digit OTP');return;}
-  if(otp!=='123456'){alert('Incorrect OTP. Use 123456 for demo.');return;}
-  goStep(3);
+  if(otp!=='123456'){
+    for(let i=0;i<6;i++){const b=document.getElementById('ob'+i);if(b){b.style.borderColor='var(--danger)';b.value='';}}
+    alert('Wrong OTP. Demo OTP is 123456');return;
+  }
+  clearInterval(otpTimerInt);
+  if(obMode==='login'){
+    U.name=localStorage.getItem('mitti_name')||'Farmer';
+    U.langs=JSON.parse(localStorage.getItem('mitti_langs')||'["en"]');
+    U.state=localStorage.getItem('mitti_state')||'West Bengal';
+    U.city=localStorage.getItem('mitti_city')||'Kharagpur';
+    U.pin=localStorage.getItem('mitti_pin')||'721301';
+    U.apiKey=localStorage.getItem('mitti_apikey')||'';
+    U.wx=JSON.parse(localStorage.getItem('mitti_wx')||'null');
+    lang=U.langs[0]||'en';
+    enterApp();
+  } else showStep('step-lang');
 }
 
-function doLangSelect(){
-  if(USER.languages.length===0){alert('Please select at least one language');return;}
-  lang=USER.languages.includes('en')?'en':USER.languages.includes('bn')?'bn':'hi';
-  goStep(4);
+/* Language */
+(function(){
+  const g=document.getElementById('lang-grid');
+  g.innerHTML=LANGS.map(l=>`<div class="lang-card" id="lc-${l.c}" onclick="toggleLC('${l.c}')">
+    <div><div class="lang-name">${l.n}</div><div class="lang-native">${l.v}</div></div>
+  </div>`).join('');
+  toggleLC('en');
+})();
+function toggleLC(c){
+  const el=document.getElementById('lc-'+c);
+  const idx=U.langs.indexOf(c);
+  if(idx>-1){if(U.langs.length>1){U.langs.splice(idx,1);el.classList.remove('sel');}}
+  else{U.langs.push(c);el.classList.add('sel');}
+  document.getElementById('lang-count').textContent=U.langs.length;
+}
+function doLang(){
+  if(!U.langs.length){alert('Select at least one language');return;}
+  lang=U.langs.includes('en')?'en':U.langs[0];
+  showStep('step-loc');
 }
 
-function doLocation(){
-  const city=document.getElementById('inp-city').value.trim();
-  if(!city){show('err-city');return;}else hide('err-city');
-  USER.city=city;
-  USER.state=document.getElementById('inp-state').value||'West Bengal';
-  USER.pin=document.getElementById('inp-pin').value||'—';
-  buildWelcome();
-  goStep(5);
+/* Location */
+let _pt=null;
+function lookupPIN(v){
+  clearTimeout(_pt);
+  ['pin-loading','pin-ok','pin-err'].forEach(id=>{document.getElementById(id).classList.remove('show')});
+  document.getElementById('loc-preview').classList.remove('show');
+  if(v.length===6){
+    document.getElementById('pin-loading').classList.add('show');
+    _pt=setTimeout(()=>{
+      document.getElementById('pin-loading').classList.remove('show');
+      const d=PINS[v];
+      if(d){
+        document.getElementById('pin-ok').textContent='✅ '+d.city+', '+d.dist+', '+d.state;
+        document.getElementById('pin-ok').classList.add('show');
+        document.getElementById('loc-detail').textContent=d.city+', '+d.dist+', '+d.state;
+        document.getElementById('loc-wx').innerHTML=`<span style="font-size:32px">⛅</span><div><div style="font-size:20px;font-weight:800;color:var(--g2)">${d.temp}°C</div><div style="font-size:13px;color:var(--muted)">${d.wx} · ${d.hum}% humidity</div></div>`;
+        document.getElementById('loc-preview').classList.add('show');
+        document.getElementById('loc-city').value=d.city;
+        document.getElementById('loc-state').value=d.state;
+        U.city=d.city;U.state=d.state;U.pin=v;U.wx=d;
+      } else document.getElementById('pin-err').classList.add('show');
+    },700);
+  }
 }
+function doLoc(){
+  const city=document.getElementById('loc-city').value.trim();
+  if(!city){showE('loc-city','loc-city-err');return;}
+  hideE('loc-city','loc-city-err');
+  U.city=city;U.state=document.getElementById('loc-state').value;
+  U.pin=document.getElementById('loc-pin').value||'—';
+  if(!U.wx)U.wx={temp:'33',wx:'Cloudy',hum:'76%'};
+  showStep('step-api');
+}
+
+/* API Key */
+function toggleKey(){const i=document.getElementById('api-key-inp');i.type=i.type==='password'?'text':'password';}
+function doApiKey(){
+  const k=document.getElementById('api-key-inp').value.trim();
+  if(!k.startsWith('sk-ant-')){document.getElementById('api-key-err').style.display='block';return;}
+  document.getElementById('api-key-err').style.display='none';
+  U.apiKey=k;localStorage.setItem('mitti_apikey',k);
+  buildWelcome();showStep('step-welcome');
+}
+function skipApi(){U.apiKey=localStorage.getItem('mitti_apikey')||'';buildWelcome();showStep('step-welcome');}
 
 function buildWelcome(){
-  document.getElementById('welcome-name').textContent='Hello, '+USER.name+' 👋';
-  const selLangs=USER.languages.map(c=>INDIAN_LANGS.find(l=>l.code===c)?.name||c).join(', ');
-  const wd=USER.weatherData;
-  document.getElementById('welcome-summary').innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:12px">
-      ${[
-        ['📱','Mobile','+91 '+USER.phone],
-        ['✉️','Email',USER.email],
-        ['🗣','Languages',selLangs],
-        ['📍','Location',USER.city+', '+USER.state+' — '+USER.pin],
-        ['🌡','Current Weather',wd?`${wd.temp}, ${wd.weather}, Humidity ${wd.humidity}`:'—'],
-      ].map(([ic,l,v])=>`<div class="card" style="display:flex;gap:12px;align-items:center;padding:14px 16px">
-        <span style="font-size:20px">${ic}</span>
-        <div><div style="font-size:11px;color:var(--muted)">${l}</div>
-          <div style="font-size:14px;font-weight:600">${v}</div></div>
-      </div>`).join('')}
-    </div>`;
+  const n=document.getElementById('welcome-name');
+  if(n)n.textContent='Hello, '+U.name+' 👋';
+  const selL=U.langs.map(c=>LANGS.find(l=>l.c===c)?.n||c).join(', ');
+  const wc=document.getElementById('welcome-cards');
+  if(wc)wc.innerHTML=[
+    ['📱','Mobile','+91 '+U.phone],
+    ['📍','Location',U.city+', '+U.state+' — '+U.pin],
+    ['🗣','Languages',selL],
+    ['🌡','Weather',U.wx?`${U.wx.temp}°C, ${U.wx.wx}`:'—'],
+    ['🤖','KisanAI',U.apiKey?'✅ Enabled & Ready':'⚠️ Not set (add in AI tab)'],
+  ].map(([ic,l,v])=>`<div class="card" style="display:flex;gap:12px;align-items:center;padding:14px 16px;margin-bottom:10px;animation:slideUp 0.4s ease">
+    <span style="font-size:20px">${ic}</span>
+    <div><div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">${l}</div>
+      <div style="font-size:14px;font-weight:600;margin-top:2px">${v}</div></div>
+  </div>`).join('');
 }
 
+/* ══════════════════════════════════════════
+   ENTER APP
+══════════════════════════════════════════ */
 function enterApp(){
+  localStorage.setItem('mitti_name',U.name);
+  localStorage.setItem('mitti_langs',JSON.stringify(U.langs));
+  localStorage.setItem('mitti_state',U.state);
+  localStorage.setItem('mitti_city',U.city);
+  localStorage.setItem('mitti_pin',U.pin);
+  localStorage.setItem('mitti_wx',JSON.stringify(U.wx));
   document.getElementById('onboarding').style.display='none';
+  document.getElementById('splash').style.display='none';
   document.getElementById('app').style.display='block';
-  document.getElementById('sb-name').textContent=USER.name||'Farmer';
-  document.getElementById('sb-loc').textContent=USER.city;
-  document.getElementById('sb-pin').textContent='PIN: '+USER.pin;
-  chatMessages=[{role:'assistant',content:t('ai_greeting')}];
-  updateLangBtns();
-  renderNav();
-  renderContent();
+  document.getElementById('sb-name').textContent=U.name||'Farmer';
+  document.getElementById('sb-loc').textContent=U.city+', '+U.state;
+  document.getElementById('sb-pin').textContent='PIN: '+U.pin;
+  document.getElementById('sb-langs-list').textContent=U.langs.map(c=>LANGS.find(l=>l.c===c)?.v||c).join(' · ');
+  chatMsgs=[{role:'assistant',content:t('ai_hi')}];
+  updateLBtns();renderNav();renderContent();
   const now=new Date();
-  document.getElementById('topbar-date').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('tb-date').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
 }
 
-function show(id){document.getElementById(id).style.display='block'}
-function hide(id){document.getElementById(id).style.display='none'}
-
-// ── APP DATA ──────────────────────────────────────────────────────────────────
-const FIELDS=[
-  {id:1,name:"North Plot",nameBn:"উত্তর মাঠ",nameHi:"उत्तरी खेत",crop:"Rice",cropBn:"ধান",cropHi:"धान",area:"2.4 ha",moisture:72,status:"Optimal",health:88,lastIrr:"2h ago",stage:"Tillering",stageBn:"কুশি পর্যায়",stageHi:"कुशी अवस्था"},
-  {id:2,name:"South Field",nameBn:"দক্ষিণ মাঠ",nameHi:"दक्षिणी खेत",crop:"Wheat",cropBn:"গম",cropHi:"गेहूँ",area:"1.8 ha",moisture:45,status:"Refill",health:62,lastIrr:"1 day ago",stage:"Germination",stageBn:"অঙ্কুরোদগম",stageHi:"अंकुरण"},
-  {id:3,name:"East Block",nameBn:"পূর্ব ব্লক",nameHi:"पूर्वी ब्लॉक",crop:"Maize",cropBn:"ভুট্টা",cropHi:"मक्का",area:"3.1 ha",moisture:91,status:"Full",health:95,lastIrr:"30 min ago",stage:"Flowering",stageBn:"ফুল পর্যায়",stageHi:"फूल अवस्था"},
-  {id:4,name:"West Garden",nameBn:"পশ্চিম বাগান",nameHi:"पश्चिम बगीचा",crop:"Tomato",cropBn:"টমেটো",cropHi:"टमाटर",area:"0.6 ha",moisture:58,status:"Optimal",health:78,lastIrr:"4h ago",stage:"Fruiting",stageBn:"ফল পর্যায়",stageHi:"फल अवस्था"},
-];
-const MARKET=[
-  {crop:"Rice",cropBn:"চাল",cropHi:"चावल",price:2180,change:+45,trend:"up",icon:"🌾",cat:"Grains"},
-  {crop:"Wheat",cropBn:"গম",cropHi:"गेहूँ",price:2275,change:+12,trend:"up",icon:"🌿",cat:"Grains"},
-  {crop:"Potato",cropBn:"আলু",cropHi:"आलू",price:1450,change:-80,trend:"down",icon:"🥔",cat:"Vegetables"},
-  {crop:"Tomato",cropBn:"টমেটো",cropHi:"टमाटर",price:3200,change:+320,trend:"up",icon:"🍅",cat:"Vegetables"},
-  {crop:"Onion",cropBn:"পেঁয়াজ",cropHi:"प्याज",price:2800,change:0,trend:"stable",icon:"🧅",cat:"Vegetables"},
-  {crop:"Mustard",cropBn:"সরিষা",cropHi:"सरसों",price:5400,change:+120,trend:"up",icon:"🌻",cat:"Oilseeds"},
-  {crop:"Maize",cropBn:"ভুট্টা",cropHi:"मक्का",price:1890,change:-30,trend:"down",icon:"🌽",cat:"Grains"},
-  {crop:"Jute",cropBn:"পাট",cropHi:"जूट",price:4600,change:+200,trend:"up",icon:"🪢",cat:"Fibre"},
-  {crop:"Brinjal",cropBn:"বেগুন",cropHi:"बैंगन",price:2100,change:+60,trend:"up",icon:"🍆",cat:"Vegetables"},
-  {crop:"Green Chilli",cropBn:"কাঁচা মরিচ",cropHi:"हरी मिर्च",price:6800,change:-400,trend:"down",icon:"🌶",cat:"Spices"},
-];
-const WEATHER_DAYS=[
-  {day:"Mon",dayBn:"সোম",dayHi:"सोम",icon:"☀",hi:34,lo:24},
-  {day:"Tue",dayBn:"মঙ্গল",dayHi:"मंगल",icon:"⛅",hi:31,lo:22},
-  {day:"Wed",dayBn:"বুধ",dayHi:"बुध",icon:"🌧",hi:27,lo:20},
-  {day:"Thu",dayBn:"বৃহ",dayHi:"गुरु",icon:"🌧",hi:26,lo:19},
-  {day:"Fri",dayBn:"শুক্র",dayHi:"शुक्र",icon:"⛅",hi:30,lo:22},
-  {day:"Sat",dayBn:"শনি",dayHi:"शनि",icon:"☀",hi:35,lo:25},
-  {day:"Sun",dayBn:"রবি",dayHi:"रवि",icon:"☀",hi:36,lo:26},
-];
-
-// ── TRANSLATION HELPER ────────────────────────────────────────────────────────
-function t(key){return (T[lang]||T.en)[key]||T.en[key]||key}
-function fn(f,k){return lang==='bn'?f[k+'Bn']:lang==='hi'?f[k+'Hi']:f[k]}
-
-// ── LANG CYCLE ────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════
+   LANGUAGE CYCLE
+══════════════════════════════════════════ */
 function cycleLang(){
-  const available=USER.languages.length>0?USER.languages:['en'];
-  const idx=available.indexOf(lang);
-  lang=available[(idx+1)%available.length];
-  chatMessages=[{role:'assistant',content:t('ai_greeting')}];
-  updateLangBtns();
-  renderNav();
-  renderContent();
+  const av=U.langs.length?U.langs:['en'];
+  lang=av[(av.indexOf(lang)+1)%av.length];
+  chatMsgs=[{role:'assistant',content:t('ai_hi')}];
+  updateLBtns();renderNav();renderContent();
 }
-function updateLangBtns(){
-  const label=lang.toUpperCase();
-  document.getElementById('lang-btn').textContent=label;
-  document.getElementById('lang-btn2').textContent=label;
+function updateLBtns(){
+  const lbl=(LANGS.find(l=>l.c===lang)?.v||lang).substring(0,8);
+  ['lbtn1','lbtn2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=lbl;});
+  document.getElementById('tb-title').textContent=t(tab);
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────────
-const TABS=[{id:'home',icon:'🏠',key:'home'},{id:'fields',icon:'🌾',key:'fields'},
-  {id:'weather',icon:'🌤',key:'weather'},{id:'market',icon:'📊',key:'market'},{id:'ai',icon:'🤖',key:'ai'}];
-
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+const TABS=[{id:'home',ic:'🏠',k:'home'},{id:'fields',ic:'🌾',k:'fields'},
+  {id:'weather',ic:'🌤',k:'weather'},{id:'market',ic:'📊',k:'market'},{id:'ai',ic:'🤖',k:'ai'}];
 function renderNav(){
-  document.getElementById('nav-items').innerHTML=TABS.map(tb=>`
-    <button class="nav-item ${currentTab===tb.id?'active':''}" onclick="switchTab('${tb.id}')">
-      <span style="width:24px;text-align:center;font-size:18px">${tb.icon}</span>
-      <span>${t(tb.key)}</span>
+  document.getElementById('sb-nav').innerHTML=TABS.map(tb=>`
+    <button class="sb-item ${tab===tb.id?'active':''}" onclick="goTab('${tb.id}')">
+      <span style="font-size:19px;width:26px;text-align:center">${tb.ic}</span>
+      <span>${t(tb.k)}</span>
     </button>`).join('');
-  document.getElementById('topbar-title').textContent=t(currentTab);
+  document.getElementById('tb-title').textContent=t(tab);
 }
-function switchTab(tab){currentTab=tab;renderNav();renderContent();closeSidebar();}
-function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-overlay').classList.add('open');}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
+function goTab(id){tab=id;renderNav();renderContent();closeSB();}
+function openSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('open');}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open');}
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function svgRing(val,size=64){
-  const r=(size-8)/2,circ=2*Math.PI*r,dash=(val/100)*circ;
-  const col=val<50?'#C0392B':val>85?'#1A6EA8':'#2E8B57';
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#E8F5E2" stroke-width="7"/>
-    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="7"
-      stroke-dasharray="${dash} ${circ}" stroke-linecap="round" transform="rotate(-90 ${size/2} ${size/2})"/>
-    <text x="${size/2}" y="${size/2+1}" text-anchor="middle" dominant-baseline="middle"
-      font-size="${size>60?13:11}" font-weight="700" fill="${col}">${val}%</text></svg>`;
+/* ══════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════ */
+function ring(val,sz=64){
+  const r=(sz-8)/2,c=2*Math.PI*r,d=(val/100)*c;
+  const col=val<50?'#C62828':val>85?'#1565C0':'#2E8B57';
+  return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
+    <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="#E8F5E2" stroke-width="7"/>
+    <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="7"
+      stroke-dasharray="${d} ${c}" stroke-linecap="round" transform="rotate(-90 ${sz/2} ${sz/2})"/>
+    <text x="${sz/2}" y="${sz/2+1}" text-anchor="middle" dominant-baseline="middle"
+      font-size="${sz>60?13:11}" font-weight="700" fill="${col}">${val}%</text></svg>`;
 }
-function badge(s){
-  const map={Optimal:`<span class="badge badge-optimal">${t('optimal')}</span>`,
-    Refill:`<span class="badge badge-refill">${t('refill')}</span>`,
-    Full:`<span class="badge badge-full">${t('full')}</span>`};
-  return map[s]||'';
+function bdg(s){
+  const m={O:`<span class="bdg bdg-O">${t('optimal')}</span>`,R:`<span class="bdg bdg-R">${t('refill')}</span>`,F:`<span class="bdg bdg-F">${t('full')}</span>`};
+  return m[s]||'';
 }
-function fieldCard(f){
-  return `<div class="card field-card" onclick="openFieldModal(${f.id})">
+function fc(f){
+  return `<div class="card field-card" onclick="openMod(${f.id})">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><div style="font-size:16px;font-weight:700">${fn(f,'name')}</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">${fn(f,'crop')} · ${f.area} · ${fn(f,'stage')}</div></div>
-      ${badge(f.status)}</div>
-    <div style="display:flex;align-items:center;gap:16px;margin-top:14px">
-      ${svgRing(f.moisture,54)}
+      <div><div style="font-size:15px;font-weight:700">${f.name}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">${f.crop} · ${f.area} · ${f.stage}</div></div>
+      ${bdg(f.status)}</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:14px">
+      ${ring(f.moisture,54)}
       <div style="flex:1">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
           <span style="font-size:12px;color:var(--muted)">${t('crop_health')}</span>
-          <span style="font-size:12px;font-weight:700;color:var(--green)">${f.health}%</span>
-        </div>
-        <div class="health-bar-bg"><div class="health-bar" style="width:${f.health}%"></div></div>
-        <div style="font-size:11px;color:#AAA;margin-top:6px">${t('last_irr')}: ${f.lastIrr}</div>
+          <span style="font-size:12px;font-weight:700;color:var(--g2)">${f.health}%</span></div>
+        <div class="hbar-bg"><div class="hbar-fill" style="width:${f.health}%;--w:${f.health}%;animation:growBar 1s ease"></div></div>
+        <div style="font-size:11px;color:#AAA;margin-top:5px">${t('last_irr')}: ${f.irr}</div>
       </div>
     </div>
   </div>`;
 }
+function showE(inputId,errId){
+  document.getElementById(inputId)?.classList.add('err');
+  const e=document.getElementById(errId);if(e)e.style.display='block';
+}
+function hideE(inputId,errId){
+  document.getElementById(inputId)?.classList.remove('err');
+  const e=document.getElementById(errId);if(e)e.style.display='none';
+}
 
-// ── SCREENS ───────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════
+   SCREENS
+══════════════════════════════════════════ */
 function renderHome(){
-  const now=new Date(),h=now.getHours();
-  const greet=h<12?t('good_morning'):h<17?t('good_afternoon'):t('good_evening');
-  const totalMoist=Math.round(FIELDS.reduce((s,f)=>s+f.moisture,0)/FIELDS.length);
-  const wd=USER.weatherData||{temp:'33°C',weather:'Cloudy',humidity:'76%'};
-  const dateStr=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const h=new Date().getHours();
+  const gr=h<12?t('gm'):h<17?t('ga'):t('ge');
+  const wx=U.wx||{temp:'33',wx:'Cloudy',hum:'76%'};
+  const avgM=Math.round(FIELDS.reduce((s,f)=>s+f.moisture,0)/FIELDS.length);
   return `
-  <div class="hero-card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div class="hero anim-slide-up">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1">
       <div>
-        <div style="font-size:13px;opacity:0.8;margin-bottom:4px">${dateStr}</div>
-        <div style="font-size:26px;font-weight:800;margin-bottom:4px">${greet}, ${USER.name||t('farmer')} 👋</div>
-        <div style="font-size:13px;opacity:0.8;margin-bottom:16px">📍 ${USER.city}, ${USER.state} · PIN ${USER.pin}</div>
-        <div class="hero-temp">${wd.temp}</div>
-        <div style="font-size:15px;opacity:0.85;margin-top:6px">${wd.weather}</div>
+        <div style="font-size:13px;opacity:0.75;margin-bottom:6px">📍 ${U.city}, ${U.state} · ${U.pin}</div>
+        <div style="font-size:26px;font-weight:800;margin-bottom:16px;line-height:1.2">${gr},<br/>${U.name||t('farmer')} 👋</div>
+        <div class="hero-temp">${wx.temp}°C</div>
+        <div style="font-size:15px;opacity:0.85;margin-top:8px">${wx.wx}</div>
       </div>
-      <div style="font-size:70px">⛅</div>
+      <div style="font-size:72px;animation:floatY3 3s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.3))">⛅</div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-      <div class="hero-badge">💧 ${wd.humidity}</div>
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;position:relative;z-index:1">
+      <div class="hero-badge">💧 ${wx.hum}%</div>
       <div class="hero-badge">🌬 18 km/h</div>
       <div class="hero-badge">🌧 10%</div>
+      <div class="hero-badge">🌡 ${parseInt(wx.temp)+3}°C ${t('feels')}</div>
     </div>
   </div>
-  <div class="grid-3" style="margin-bottom:28px">
-    <div class="card stat-card"><div style="font-size:26px">🌾</div>
-      <div class="stat-val" style="color:var(--green)">${FIELDS.length}</div>
-      <div class="stat-lbl">${t('fields')}</div></div>
-    <div class="card stat-card"><div style="font-size:26px">💧</div>
-      <div class="stat-val" style="color:var(--info)">${totalMoist}%</div>
-      <div class="stat-lbl">${t('avg_moisture')}</div></div>
-    <div class="card stat-card"><div style="font-size:26px">⚠️</div>
-      <div class="stat-val" style="color:var(--amber)">2</div>
-      <div class="stat-lbl">${t('alerts')}</div></div>
+  <div class="g3" style="margin-bottom:24px">
+    ${[['🌾',FIELDS.length,t('fields'),'var(--g2)'],['💧',avgM+'%',t('moisture'),'var(--info)'],['⚠️',2,t('alerts'),'var(--a1)']].map(([ic,v,l,c],i)=>`
+      <div class="card stat-card" style="animation:slideUp 0.4s ease ${i*0.1}s both">
+        <div style="font-size:26px">${ic}</div>
+        <div class="stat-val" style="color:${c}">${v}</div>
+        <div class="stat-lbl">${l}</div>
+      </div>`).join('')}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-    <span class="section-title" style="margin-bottom:0">${t('your_fields')}</span>
-    <span style="font-size:13px;color:var(--green2);font-weight:600;cursor:pointer" onclick="switchTab('fields')">${t('view_all')}</span>
+    <span class="sec-title" style="margin-bottom:0">${t('my_fields')}</span>
+    <span style="font-size:13px;color:var(--g3);font-weight:700;cursor:pointer" onclick="goTab('fields')">${t('view_all')} →</span>
   </div>
-  <div class="grid-2">${FIELDS.map(f=>fieldCard(f)).join('')}</div>`;
+  <div class="g2">${FIELDS.map(f=>fc(f)).join('')}</div>`;
 }
 
 function renderWeather(){
-  const wd=USER.weatherData||{temp:'33°C',weather:'Cloudy',humidity:'76%',city:'Your Location'};
+  const wx=U.wx||{temp:'33',wx:'Cloudy',hum:'76%'};
   return `
-  <div class="hero-card" style="margin-bottom:28px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div class="hero anim-slide-up" style="margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1">
       <div>
-        <div style="font-size:13px;opacity:0.8">📍 ${USER.city}, ${USER.state} · PIN ${USER.pin}</div>
-        <div class="hero-temp" style="margin-top:8px">${wd.temp}</div>
-        <div style="font-size:16px;opacity:0.85;margin-top:6px">${wd.weather}</div>
-        <div style="font-size:13px;opacity:0.7;margin-top:3px">${t('feels_like')} ${parseInt(wd.temp)+3}°C</div>
+        <div style="font-size:13px;opacity:0.75">📍 ${U.city}, ${U.state} · PIN ${U.pin}</div>
+        <div class="hero-temp" style="margin-top:10px">${wx.temp}°C</div>
+        <div style="font-size:16px;opacity:0.85;margin-top:8px">${wx.wx}</div>
+        <div style="font-size:13px;opacity:0.65;margin-top:4px">${t('feels')} ${parseInt(wx.temp)+3}°C</div>
       </div>
-      <div style="font-size:90px">⛅</div>
+      <div style="font-size:90px;animation:floatY 3.5s ease-in-out infinite;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3))">⛅</div>
     </div>
-    <div style="display:flex;gap:28px;margin-top:20px;border-top:1px solid rgba(255,255,255,0.25);padding-top:18px">
-      ${[[t('uv'),'High 8'],[t('sunrise'),'5:25 AM'],[t('sunset'),'6:05 PM']].map(([l,v])=>
-        `<div><div style="font-size:11px;opacity:0.7">${l}</div>
+    <div style="display:flex;gap:24px;margin-top:18px;border-top:1px solid rgba(255,255,255,0.2);padding-top:16px;position:relative;z-index:1">
+      ${[[t('uv'),'High 8'],[t('rise'),'5:25 AM'],[t('set'),'6:05 PM']].map(([l,v])=>
+        `<div><div style="font-size:11px;opacity:0.65;font-weight:700;text-transform:uppercase">${l}</div>
           <div style="font-size:15px;font-weight:700;margin-top:3px">${v}</div></div>`).join('')}
     </div>
   </div>
-  <div class="grid-2">
-    <div class="card" style="padding:18px">
-      <div class="section-title">${t('forecast')}</div>
-      ${WEATHER_DAYS.map((d,i)=>`<div class="forecast-row">
-        <span style="width:52px;font-size:13px;font-weight:${i===0?700:500}">
-          ${i===0?'Today':(lang==='bn'?d.dayBn:lang==='hi'?d.dayHi:d.day)}</span>
-        <span style="font-size:20px;margin-right:12px">${d.icon}</span>
-        <span style="flex:1;font-size:12px;color:var(--muted)">${d.icon.includes('🌧')?'Rain':d.icon.includes('⛅')?'Partly Cloudy':'Sunny'}</span>
-        <span style="font-size:13px;color:var(--muted);margin-right:10px">${d.lo}°</span>
-        <span style="font-size:13px;font-weight:700;color:var(--green)">${d.hi}°</span>
+  <div class="g2">
+    <div class="card" style="padding:18px;animation:slideIn 0.4s ease">
+      <div class="sec-title">${t('forecast')}</div>
+      ${WXD.map((d,i)=>`<div class="fc-row">
+        <span style="width:54px;font-size:13px;font-weight:${i===0?700:500}">${i===0?'Today':d.d}</span>
+        <span style="font-size:20px;margin-right:12px">${d.ic}</span>
+        <span style="flex:1;font-size:12px;color:var(--muted)">${d.ic.includes('🌧')?t('rain'):d.ic.includes('⛅')?t('pc'):t('sunny')}</span>
+        <span style="font-size:13px;color:var(--muted);margin-right:8px">${d.lo}°</span>
+        <span style="font-size:13px;font-weight:700;color:var(--g2)">${d.hi}°</span>
       </div>`).join('')}
     </div>
-    <div>
-      <div class="section-title">${t('farm_tips')}</div>
-      ${[
-        {icon:'🌱',title:'Good planting window',desc:'Next 3 days ideal for transplanting',bg:'#EBF7E3'},
-        {icon:'💧',title:'Reduce irrigation',desc:'Rain expected Wed — hold irrigation',bg:'#E6F1FB'},
-        {icon:'🌾',title:'Harvest window',desc:'Dry Sun–Mon ideal for harvesting',bg:'#FEF3E2'},
-      ].map(tip=>`<div class="tip-card" style="background:${tip.bg};margin-bottom:12px">
-        <div style="font-size:28px">${tip.icon}</div>
-        <div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${tip.title}</div>
-          <div style="font-size:13px;color:var(--muted)">${tip.desc}</div></div>
-      </div>`).join('')}
+    <div style="animation:slideIn 0.5s ease">
+      <div class="sec-title">${t('tips')}</div>
+      ${[{ic:'🌱',d:'Good planting window — next 3 days',bg:'#E8F5E2'},{ic:'💧',d:'Rain expected Wed — reduce irrigation',bg:'#E3F2FD'},{ic:'🌾',d:'Sun–Mon ideal for harvest',bg:'#FEF3E2'}].map(tip=>`
+        <div class="tip-card" style="background:${tip.bg}">
+          <span style="font-size:28px">${tip.ic}</span>
+          <div style="font-size:13px;color:var(--muted);line-height:1.65">${tip.d}</div>
+        </div>`).join('')}
     </div>
   </div>`;
 }
 
 function renderFields(){
   return `
-  <div class="section-title">${t('your_fields')}</div>
-  <div class="grid-4" style="margin-bottom:24px">
-    ${[[t('optimal'),FIELDS.filter(f=>f.status==='Optimal').length,'var(--green)'],
-       [t('refill'),FIELDS.filter(f=>f.status==='Refill').length,'var(--danger)'],
-       [t('full'),FIELDS.filter(f=>f.status==='Full').length,'var(--info)'],
-       ['Avg Health',Math.round(FIELDS.reduce((s,f)=>s+f.health,0)/FIELDS.length)+'%','var(--amber)'],
-    ].map(([l,v,c])=>`<div class="card stat-card">
+  <div class="sec-title anim-slide-up">${t('my_fields')}</div>
+  <div class="g4" style="margin-bottom:20px">
+    ${[[t('optimal'),FIELDS.filter(f=>f.status==='O').length,'var(--g2)'],
+       [t('refill'),FIELDS.filter(f=>f.status==='R').length,'var(--danger)'],
+       [t('full'),FIELDS.filter(f=>f.status==='F').length,'var(--info)'],
+       ['Avg',Math.round(FIELDS.reduce((s,f)=>s+f.health,0)/FIELDS.length)+'%','var(--a1)'],
+    ].map(([l,v,c],i)=>`<div class="card stat-card" style="animation:slideUp 0.4s ease ${i*0.08}s both">
       <div class="stat-val" style="color:${c}">${v}</div>
       <div class="stat-lbl">${l}</div></div>`).join('')}
   </div>
-  <div class="grid-2">${FIELDS.map(f=>fieldCard(f)).join('')}</div>`;
+  <div class="g2">${FIELDS.map(f=>fc(f)).join('')}</div>`;
 }
 
 function renderMarket(){
-  const filtered=MARKET.filter(m=>{
-    const name=lang==='bn'?m.cropBn:lang==='hi'?m.cropHi:m.crop;
-    return name.toLowerCase().includes(marketSearch.toLowerCase())&&(marketFilter==='All'||m.cat===marketFilter);
-  });
-  const gainer=[...MARKET].sort((a,b)=>b.change-a.change)[0];
-  const loser=[...MARKET].filter(m=>m.change<0).sort((a,b)=>a.change-b.change)[0];
+  const filt=MKT.filter(m=>m.crop.toLowerCase().includes(mktQ.toLowerCase())&&(mktF==='All'||m.cat===mktF));
+  const gainer=[...MKT].sort((a,b)=>b.change-a.change)[0];
+  const loser=[...MKT].filter(m=>m.change<0).sort((a,b)=>a.change-b.change)[0];
   return `
-  <div class="section-title">${t('market_title')}</div>
-  <div class="section-sub">${t('market_sub')} · 📍 ${USER.city} Mandi</div>
-  <div class="grid-2" style="margin-bottom:24px">
-    <div class="mover-card" style="background:#E8F8EF;border:1px solid #A8E4C0">
-      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px">🚀 ${t('top_gainer')}</div>
-      <div style="font-size:15px;font-weight:700">${lang==='bn'?gainer.cropBn:lang==='hi'?gainer.cropHi:gainer.crop}</div>
-      <div style="font-size:22px;font-weight:800;color:var(--green);margin:4px 0">₹${gainer.price.toLocaleString()}</div>
+  <div class="sec-title anim-slide-up">${t('mkt_title')}</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:500">${t('mkt_sub')} · 📍 ${U.city} Mandi · ${new Date().toLocaleDateString()}</div>
+  <div class="g2" style="margin-bottom:20px">
+    <div style="background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border:1.5px solid #A5D6A7;border-radius:16px;padding:16px;animation:slideUp 0.3s ease">
+      <div style="font-size:11px;font-weight:800;color:var(--g1);margin-bottom:6px">🚀 ${t('gainer')}</div>
+      <div style="font-size:16px;font-weight:700">${gainer.crop}</div>
+      <div style="font-size:24px;font-weight:800;color:var(--g2);margin:4px 0">₹${gainer.price.toLocaleString()}</div>
       <div class="up" style="font-size:13px;font-weight:700">▲ ₹${gainer.change}</div>
     </div>
-    <div class="mover-card" style="background:#FEF0EF;border:1px solid #F5C0BB">
-      <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:6px">📉 ${t('top_fall')}</div>
-      <div style="font-size:15px;font-weight:700">${lang==='bn'?loser.cropBn:lang==='hi'?loser.cropHi:loser.crop}</div>
-      <div style="font-size:22px;font-weight:800;color:var(--danger);margin:4px 0">₹${loser.price.toLocaleString()}</div>
-      <div class="down" style="font-size:13px;font-weight:700">▼ ₹${Math.abs(loser.change)}</div>
+    <div style="background:linear-gradient(135deg,#FFEBEE,#FCE4EC);border:1.5px solid #EF9A9A;border-radius:16px;padding:16px;animation:slideUp 0.3s ease 0.1s both">
+      <div style="font-size:11px;font-weight:800;color:var(--danger);margin-bottom:6px">📉 ${t('loser')}</div>
+      <div style="font-size:16px;font-weight:700">${loser.crop}</div>
+      <div style="font-size:24px;font-weight:800;color:var(--danger);margin:4px 0">₹${loser.price.toLocaleString()}</div>
+      <div class="dn" style="font-size:13px;font-weight:700">▼ ₹${Math.abs(loser.change)}</div>
     </div>
   </div>
-  <div class="search-box">
+  <div class="sch-box">
     <span style="font-size:16px">🔍</span>
-    <input class="search-input" placeholder="${t('search')}" value="${marketSearch}" oninput="marketSearch=this.value;renderContent()"/>
+    <input class="sch-inp" placeholder="${t('search')}" value="${mktQ}" oninput="mktQ=this.value;renderContent()"/>
   </div>
-  <div class="chip-row">
-    ${['All','Grains','Vegetables','Oilseeds','Spices','Fibre'].map(c=>
-      `<button class="chip ${marketFilter===c?'active':''}" onclick="marketFilter='${c}';renderContent()">${c}</button>`).join('')}
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+    ${['All','Grains','Vegetables','Oilseeds','Spices','Fibre'].map(c=>`<button class="chip ${mktF===c?'active':''}" onclick="mktF='${c}';renderContent()">${c}</button>`).join('')}
   </div>
   <div class="card">
-    ${filtered.map((m,i)=>{
-      const name=lang==='bn'?m.cropBn:lang==='hi'?m.cropHi:m.crop;
-      const ch=m.trend==='up'?`<span class="up">▲ ₹${m.change}</span>`:
-        m.trend==='down'?`<span class="down">▼ ₹${Math.abs(m.change)}</span>`:
-        `<span class="stable">— ${t('stable')}</span>`;
-      return `<div class="market-row" ${i===filtered.length-1?'style="border-bottom:none"':''}>
-        <span style="font-size:26px;margin-right:14px">${m.icon}</span>
-        <div style="flex:1"><div style="font-size:14px;font-weight:700">${name}</div>
-          <div style="font-size:11px;color:var(--muted)">${t('price_unit')}</div></div>
-        <div style="text-align:right">
-          <div style="font-size:17px;font-weight:800">₹${m.price.toLocaleString()}</div>
-          <div style="font-size:12px">${ch}</div>
-        </div>
-      </div>`;
-    }).join('')}
-    ${filtered.length===0?'<div style="text-align:center;padding:32px;color:var(--muted)">No crops found</div>':''}
+    ${filt.map((m,i)=>`<div class="mkt-row" style="${i===filt.length-1?'border-bottom:none':''}">
+      <span style="font-size:26px;margin-right:14px">${m.icon}</span>
+      <div style="flex:1"><div style="font-size:14px;font-weight:700">${m.crop}</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600">${t('unit')}</div></div>
+      <div style="text-align:right">
+        <div style="font-size:17px;font-weight:800">₹${m.price.toLocaleString()}</div>
+        <div style="font-size:12px;font-weight:700">${m.trend==='up'?`<span class="up">▲ ₹${m.change}</span>`:m.trend==='down'?`<span class="dn">▼ ₹${Math.abs(m.change)}</span>`:`<span class="st">— ${t('stable')}</span>`}</div>
+      </div>
+    </div>`).join('')}
+    ${!filt.length?'<div style="text-align:center;padding:28px;color:var(--muted)">No crops found</div>':''}
   </div>`;
 }
 
-const SYS=`You are KisanAI, a smart farming assistant for Indian farmers. You speak Hindi, Bengali, English and all Indian languages — always reply in the same language the user writes in. User's location: ${()=>USER.city+', '+USER.state+' PIN '+USER.pin}. Help with crops, soil, irrigation, pests, weather, market prices, government schemes. Be concise and practical.`;
-
 function renderAI(){
-  const showSug=chatMessages.length<=2;
+  const noK=!U.apiKey;
   return `
   <div class="chat-wrap">
-    <div style="margin-bottom:16px">
-      <div class="section-title" style="margin-bottom:2px">${t('ai_title')}</div>
-      <div style="font-size:12px;color:var(--muted)">${t('ai_sub')}</div>
+    <div style="margin-bottom:12px">
+      <div class="sec-title" style="margin-bottom:3px">${t('ai_title')}</div>
+      <div style="font-size:12px;color:var(--muted);font-weight:600">${t('ai_sub')} · ${U.langs.map(c=>LANGS.find(l=>l.c===c)?.v||c).join(' · ')}</div>
     </div>
+    ${noK?`<div class="no-api-box">
+      ⚠️ <strong>API Key not set.</strong> Add your key to enable AI chat.<br/>
+      <a href="https://console.anthropic.com" target="_blank" style="color:var(--info);font-weight:700">→ Get free key at console.anthropic.com</a>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <input id="inline-key" type="password" placeholder="sk-ant-..." style="flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;background:var(--card)"/>
+        <button onclick="saveKey()" style="background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border:none;border-radius:10px;padding:9px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit">Save</button>
+      </div>
+    </div>`:''}
     <div class="chat-msgs" id="chat-msgs">
-      ${chatMessages.map(m=>m.typing?
-        `<div class="msg ai"><div class="msg-avatar">🌾</div>
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:4px 18px 18px 18px;padding:12px 16px;display:flex;gap:5px">
+      ${chatMsgs.map(m=>m.typing?
+        `<div class="msg ai"><div class="msg-av">🌾</div>
+          <div style="background:var(--card);border:1.5px solid var(--border);border-radius:4px 18px 18px 18px;padding:12px 16px;display:flex;gap:5px">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`:
-        `<div class="msg ${m.role==='user'?'user':'ai'}">
-          ${m.role==='assistant'?'<div class="msg-avatar">🌾</div>':''}
-          <div class="msg-bubble">${m.content.replace(/</g,'&lt;')}</div>
-          ${m.role==='user'?'<div class="msg-avatar" style="background:var(--amber)">👨‍🌾</div>':''}
+        `<div class="msg ${m.role==='user'?'u':'ai'}">
+          ${m.role==='assistant'?'<div class="msg-av">🌾</div>':''}
+          <div class="msg-bub">${m.content.replace(/</g,'&lt;').replace(/\n/g,'<br/>')}</div>
+          ${m.role==='user'?`<div class="msg-av" style="background:linear-gradient(135deg,var(--a1),var(--a2))">👨‍🌾</div>`:''}
         </div>`).join('')}
-      <div id="chat-bottom"></div>
+      <div id="cb"></div>
     </div>
-    ${showSug?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      ${t('suggestions').map(s=>`<button class="suggestion-btn" onclick="sendMsg('${s.replace(/'/g,"\\'")}')"> ${s}</button>`).join('')}
+    ${chatMsgs.length<=2?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      ${t('sugg').map(s=>`<button class="sugg-btn" onclick="sendMsg('${s.replace(/'/g,"\\'")}')"> ${s}</button>`).join('')}
     </div>`:''}
     <div class="chat-input-row">
-      <input class="chat-input" id="chat-input" placeholder="${t('ai_placeholder')}"
+      <input class="chat-inp" id="ci" placeholder="${t('ai_ph')}"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"/>
-      <button class="chat-send" id="chat-send-btn" onclick="sendMsg()">↑</button>
+      <button class="chat-send" id="csb" onclick="sendMsg()">↑</button>
     </div>
   </div>`;
+}
+
+function saveKey(){
+  const k=document.getElementById('inline-key')?.value?.trim();
+  if(k?.startsWith('sk-ant-')){U.apiKey=k;localStorage.setItem('mitti_apikey',k);renderContent();}
+  else alert('Invalid key. Must start with sk-ant-');
 }
 
 async function sendMsg(text){
-  const input=document.getElementById('chat-input');
-  const userMsg=(text||(input?input.value:'')).trim();
-  if(!userMsg) return;
-  if(input) input.value='';
-  chatMessages.push({role:'user',content:userMsg});
-  chatMessages.push({role:'assistant',typing:true});
-  renderContent();
-  setTimeout(()=>{const b=document.getElementById('chat-bottom');if(b)b.scrollIntoView({behavior:'smooth'});},50);
+  const inp=document.getElementById('ci');
+  const msg=(text||(inp?inp.value:'')).trim();
+  if(!msg)return;
+  if(!U.apiKey){alert('Please add API key first');return;}
+  if(inp)inp.value='';
+  chatMsgs.push({role:'user',content:msg});
+  chatMsgs.push({role:'assistant',typing:true});
+  renderContent();scrl();
   try{
-    const systemPrompt=`You are KisanAI, a smart farming assistant for Indian farmers. Always reply in the same language the user writes in. User: ${USER.name}, Location: ${USER.city}, ${USER.state}, PIN ${USER.pin}. Farm: 4 fields. Help with crops, soil, irrigation, pests, weather, market prices. Be concise and practical.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
-        system:systemPrompt,
-        messages:chatMessages.filter(m=>!m.typing).map(m=>({role:m.role,content:m.content}))})});
+    const langName=LANGS.find(l=>l.c===lang)?.n||'English';
+    const sys=`You are KisanAI, a multilingual smart farming assistant for Indian farmers. CRITICAL: Always reply in the EXACT same language the user writes in. If user writes Hindi → reply Hindi. Bengali → Bengali. Tamil → Tamil. English → English. Never mix languages. User: ${U.name}, Location: ${U.city}, ${U.state}, PIN ${U.pin}. Farm: Rice (72% moisture, Optimal), Wheat (45%, needs water), Maize (91%, Full), Tomato (58%, Optimal). Weather: ${U.wx?.temp||33}°C, ${U.wx?.wx||'Cloudy'}. Help with: crops, irrigation, pests, market prices, government schemes. Be concise and practical.`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':U.apiKey,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1024,system:sys,
+        messages:chatMsgs.filter(m=>!m.typing).map(m=>({role:m.role,content:m.content}))})
+    });
     const data=await res.json();
-    const reply=data.content?.map(b=>b.text||'').join('')||'Sorry, please try again.';
-    chatMessages=chatMessages.filter(m=>!m.typing);
-    chatMessages.push({role:'assistant',content:reply});
-  }catch{
-    chatMessages=chatMessages.filter(m=>!m.typing);
-    chatMessages.push({role:'assistant',content:'Connection error. Please try again.'});
+    if(data.error)throw new Error(data.error.message);
+    const reply=data.content?.map(b=>b.text||'').join('')||'Sorry, no response.';
+    chatMsgs=chatMsgs.filter(m=>!m.typing);
+    chatMsgs.push({role:'assistant',content:reply});
+  }catch(err){
+    chatMsgs=chatMsgs.filter(m=>!m.typing);
+    chatMsgs.push({role:'assistant',content:'❌ Error: '+err.message});
   }
-  renderContent();
-  setTimeout(()=>{const b=document.getElementById('chat-bottom');if(b)b.scrollIntoView({behavior:'smooth'});},50);
+  renderContent();scrl();
 }
+function scrl(){setTimeout(()=>{document.getElementById('cb')?.scrollIntoView({behavior:'smooth'});},60);}
 
-function openFieldModal(id){
+function openMod(id){
   const f=FIELDS.find(x=>x.id===id);if(!f)return;
-  document.getElementById('modal-inner').innerHTML=`
+  document.getElementById('fmodal-inner').innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
-      <div><div style="font-size:20px;font-weight:800">${fn(f,'name')}</div>
-        <div style="font-size:13px;color:var(--muted)">${fn(f,'crop')} · ${f.area}</div></div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div><div style="font-size:20px;font-weight:800">${f.name}</div>
+        <div style="font-size:13px;color:var(--muted)">${f.crop} · ${f.area}</div></div>
+      <button style="background:var(--bg);border:none;border-radius:20px;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center" onclick="closeMod()">✕</button>
     </div>
-    <div style="display:flex;justify-content:space-around;background:var(--bg);border-radius:16px;padding:20px 0;margin-bottom:18px">
-      <div style="text-align:center">${svgRing(f.moisture,80)}
-        <div style="font-size:11px;color:var(--muted);margin-top:6px">Moisture</div></div>
+    <div style="display:flex;justify-content:space-around;background:var(--bg);border-radius:16px;padding:20px 0;margin-bottom:16px">
+      <div style="text-align:center">${ring(f.moisture,76)}
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:600">MOISTURE</div></div>
       <div style="text-align:center">
-        <div style="font-size:32px;font-weight:800;color:var(--green2)">${f.health}%</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px">${t('crop_health')}</div></div>
-      <div style="text-align:center">${badge(f.status)}
-        <div style="font-size:11px;color:var(--muted);margin-top:12px">Status</div></div>
+        <div style="font-size:34px;font-weight:800;color:var(--g3)">${f.health}%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;font-weight:600">${t('crop_health').toUpperCase()}</div></div>
+      <div style="text-align:center">${bdg(f.status)}
+        <div style="font-size:11px;color:var(--muted);margin-top:12px;font-weight:600">STATUS</div></div>
     </div>
-    ${[[t('last_irr'),f.lastIrr],[t('fert_due'),t('in5days')],[t('pest_risk'),t('low')]].map(([k,v])=>
-      `<div class="modal-row"><span>${k}</span><span>${v}</span></div>`).join('')}
-    <button class="btn-primary">${t('schedule_irr')}</button>`;
-  document.getElementById('field-modal').style.display='flex';
+    ${[[t('last_irr'),f.irr],[t('fd'),t('days5')],[t('pr'),t('low')]].map(([k,v])=>
+      `<div class="m-row"><span>${k}</span><span>${v}</span></div>`).join('')}
+    <button style="width:100%;margin-top:16px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(26,107,62,0.35)">${t('irr')}</button>`;
+  document.getElementById('fmodal').style.display='flex';
 }
-function closeModal(){document.getElementById('field-modal').style.display='none';}
+function closeMod(){document.getElementById('fmodal').style.display='none';}
 
 function renderContent(){
   const el=document.getElementById('main-content');if(!el)return;
-  if(currentTab==='home') el.innerHTML=renderHome();
-  else if(currentTab==='fields') el.innerHTML=renderFields();
-  else if(currentTab==='weather') el.innerHTML=renderWeather();
-  else if(currentTab==='market') el.innerHTML=renderMarket();
-  else if(currentTab==='ai') el.innerHTML=renderAI();
+  if(tab==='home')el.innerHTML=renderHome();
+  else if(tab==='fields')el.innerHTML=renderFields();
+  else if(tab==='weather')el.innerHTML=renderWeather();
+  else if(tab==='market')el.innerHTML=renderMarket();
+  else if(tab==='ai')el.innerHTML=renderAI();
+  if(tab==='ai')scrl();
 }
+
+// Load saved API key
+(function(){const k=localStorage.getItem('mitti_apikey');if(k)U.apiKey=k;})();
 </script>
 </body>
 </html>
