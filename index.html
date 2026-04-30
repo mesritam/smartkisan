@@ -1,1210 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Mitti – Smart Farm</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --fk:#2874F0;--fk2:#1a5dc8;--fk3:#0d3fa8;--fkd:#2874F015;
-  --org:#FF6B00;--org2:#FF9500;
-  --bg:#0D0E14;--c1:#13141C;--c2:#1A1C27;--c3:#232535;
-  --bd:#2874F018;--bd2:#2874F025;--bd3:#2874F040;
-  --t1:#F0F4FF;--t2:#8B9BBF;--t3:#4A5270;
-  --red:#FF3B3B;--grn:#00B248;--yel:#FFB800;
-  --safe:env(safe-area-inset-bottom,0px);
-}
-html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{font-family:'Sora',sans-serif;color:var(--t1);overscroll-behavior:none}
-
-/* ══ SCROLLBAR ══ */
-::-webkit-scrollbar{width:0;height:0}
-
-/* ══ ANIMATIONS ══ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-
-.anim-up{animation:fadeUp .35s cubic-bezier(.4,0,.2,1) both}
-.stagger>*{animation:fadeUp .35s cubic-bezier(.4,0,.2,1) both}
-.stagger>*:nth-child(1){animation-delay:.04s}
-.stagger>*:nth-child(2){animation-delay:.08s}
-.stagger>*:nth-child(3){animation-delay:.13s}
-.stagger>*:nth-child(4){animation-delay:.18s}
-.stagger>*:nth-child(5){animation-delay:.23s}
-
-/* ══ ONBOARDING ══ */
-#ob{position:fixed;inset:0;z-index:9000;background:var(--bg);display:flex;flex-direction:column}
-.ob-header{background:linear-gradient(135deg,var(--fk3),var(--fk));padding:48px 24px 32px;display:flex;flex-direction:column;align-items:center}
-.ob-logo{width:72px;height:72px;border-radius:20px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:16px;backdrop-filter:blur(10px)}
-.ob-brand{font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px}
-.ob-brand span{color:var(--org2)}
-.ob-tagline{font-size:13px;color:rgba(255,255,255,.7);margin-top:4px;font-weight:500;letter-spacing:.5px}
-.ob-body{flex:1;overflow-y:auto;padding:28px 20px 100px}
-.ob-step{display:none}
-.ob-step.on{display:block;animation:slideIn .3s ease}
-.ob-h{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px;color:var(--t1)}
-.ob-s{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:24px}
-/* Progress */
-.ob-prog{display:flex;gap:6px;margin-bottom:24px}
-.ob-pd{height:3px;border-radius:2px;flex:1;background:var(--c3);transition:background .3s}
-.ob-pd.on{background:var(--fk)}
-/* Inputs */
-.fl{margin-bottom:14px}
-.fl-l{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;display:block}
-.fi{width:100%;background:var(--c2);border:1.5px solid var(--bd2);border-radius:12px;padding:14px 16px;font-size:15px;color:var(--t1);font-family:inherit;outline:none;transition:all .2s}
-.fi::placeholder{color:var(--t3)}
-.fi:focus{border-color:var(--fk);box-shadow:0 0 0 3px var(--fkd)}
-.fi.bad{border-color:var(--red)}
-.fi-e{font-size:12px;color:var(--red);margin-top:5px;display:none;font-weight:500}
-.fi-row{display:flex;gap:8px}
-.fi-pre{width:68px;flex-shrink:0;text-align:center;background:var(--c3);color:var(--fk);font-weight:700;border-color:var(--bd);cursor:default}
-/* OTP */
-.otp-row{display:flex;gap:8px;justify-content:center;margin:16px 0}
-.otp-b{width:48px;height:56px;background:var(--c2);border:1.5px solid var(--bd2);border-radius:12px;font-size:22px;font-weight:700;text-align:center;color:var(--t1);font-family:inherit;outline:none;transition:all .2s}
-.otp-b:focus{border-color:var(--fk);box-shadow:0 0 0 3px var(--fkd);transform:scale(1.06)}
-.otp-b.ok{border-color:var(--fk);background:var(--fkd)}
-.otp-demo{background:var(--c2);border:1px solid var(--bd2);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--t2);display:flex;align-items:center;gap:8px;margin-bottom:14px}
-/* Lang grid */
-.lg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
-.lc{background:var(--c2);border:1.5px solid var(--bd);border-radius:14px;padding:12px 13px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.lc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--fk3),var(--fk));opacity:0;transition:opacity .2s}
-.lc.on::before{opacity:.12}
-.lc.on{border-color:var(--fk)}
-.lc.on .lc-ck{opacity:1;transform:scale(1)}
-.lc:hover{transform:translateY(-2px);border-color:var(--bd3)}
-.lc-n{font-size:13px;font-weight:700;position:relative}
-.lc-v{font-size:11px;color:var(--t3);position:relative}
-.lc-ck{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--fk);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;opacity:0;transform:scale(.5);transition:all .2s}
-/* PIN */
-.pm{font-size:12px;font-weight:600;padding:3px 0;display:none}
-.pm.on{display:block}
-.lc-found{background:rgba(40,116,240,.08);border:1px solid rgba(40,116,240,.25);border-radius:12px;padding:14px;margin-top:12px;display:none}
-.lc-found.on{display:block;animation:fadeUp .3s ease}
-/* Buttons */
-.ob-foot{position:fixed;bottom:0;left:0;right:0;padding:16px 20px calc(16px + var(--safe));background:linear-gradient(transparent,var(--bg) 35%)}
-.btn-fk{width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--fk3),var(--fk));color:#fff;box-shadow:0 4px 24px rgba(40,116,240,.35);transition:all .2s}
-.btn-fk:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(40,116,240,.45)}
-.btn-fk:active{transform:scale(.98)}
-.btn-o{width:100%;padding:14px;border:1.5px solid var(--bd2);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--t2);margin-top:10px;transition:all .2s}
-.btn-o:hover{border-color:var(--fk);color:var(--fk)}
-
-/* ══ MAIN APP ══ */
-#app{position:fixed;inset:0;z-index:8000;display:none;flex-direction:column;background:var(--bg)}
-
-/* ─ FLIPKART HEADER ─ */
-.fk-header{background:linear-gradient(135deg,var(--fk3) 0%,var(--fk) 100%);padding:12px 14px calc(12px) 14px;flex-shrink:0;position:relative;z-index:100}
-.fk-header-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.fk-logo-area{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.fk-logo-box{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px}
-.fk-brand-txt{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px}
-.fk-brand-txt em{color:var(--org2);font-style:normal}
-/* Search bar */
-.fk-search{flex:1;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 13px;cursor:pointer;backdrop-filter:blur(10px);transition:all .2s}
-.fk-search:focus-within{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
-.fk-search-input{background:none;border:none;outline:none;font-size:14px;color:#fff;font-family:inherit;flex:1;min-width:0}
-.fk-search-input::placeholder{color:rgba(255,255,255,.6);font-size:13px}
-.fk-search-icon{font-size:15px;flex-shrink:0;opacity:.8}
-.fk-header-right{display:flex;gap:8px;flex-shrink:0}
-.fk-icon-btn{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;transition:all .2s}
-.fk-icon-btn:hover{background:rgba(255,255,255,.2)}
-.fk-notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--fk)}
-/* Location bar */
-.fk-loc-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.75);font-weight:500}
-.fk-loc-pin{font-size:12px}
-
-/* ─ SCREENS ─ */
-.ap-screens{flex:1;overflow:hidden;position:relative}
-.sc{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;transform:translateY(8px);-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--bg)}
-.sc::-webkit-scrollbar{display:none}
-.sc.on{opacity:1;pointer-events:all;transform:translateY(0)}
-
-/* ─ BANNER SLIDER ─ */
-.banner-wrap{position:relative;overflow:hidden;border-radius:12px;margin:12px 14px 0;height:140px}
-.banner-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);height:100%}
-.banner-slide{min-width:100%;border-radius:12px;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 22px}
-.banner-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
-.bdot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.4);transition:all .3s}
-.bdot.on{width:18px;background:#fff}
-
-/* ─ CATEGORIES ─ */
-.cat-row{display:flex;gap:0;overflow-x:auto;padding:14px 14px 6px;scrollbar-width:none;border-bottom:1px solid var(--bd)}
-.cat-row::-webkit-scrollbar{display:none}
-.cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding:0 14px;cursor:pointer;transition:all .2s}
-.cat-item:hover .cat-ic{transform:scale(1.1)}
-.cat-ic{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform .2s;position:relative;overflow:hidden}
-.cat-ic::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);border-radius:inherit}
-.cat-lbl{font-size:11px;font-weight:600;color:var(--t2);white-space:nowrap;letter-spacing:.1px}
-.cat-item.on .cat-lbl{color:var(--fk)}
-.cat-item.on .cat-ic{box-shadow:0 0 0 2px var(--fk)}
-
-/* ─ SECTION HEADER ─ */
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px}
-.sec-t{font-size:16px;font-weight:800;letter-spacing:-.2px}
-.sec-link{font-size:12px;color:var(--fk);font-weight:700;cursor:pointer;transition:opacity .2s}
-.sec-link:hover{opacity:.7}
-.sec-badge{font-size:10px;font-weight:700;background:var(--fk);color:#fff;border-radius:20px;padding:2px 8px;margin-left:6px}
-
-/* ─ PRODUCT CARDS (Shop) ─ */
-.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);margin:0}
-.prod-card{background:var(--c1);padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.prod-card:hover{background:var(--c2)}
-.prod-card:active{transform:scale(.99)}
-.prod-img{width:100%;height:120px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:54px;margin-bottom:10px;position:relative}
-.prod-badge{position:absolute;top:6px;left:6px;font-size:10px;font-weight:700;background:var(--grn);color:#fff;border-radius:4px;padding:2px 6px}
-.prod-badge.hot{background:var(--red)}
-.prod-badge.new{background:var(--fk)}
-.prod-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.prod-sub{font-size:11px;color:var(--t3);margin-bottom:8px}
-.prod-price-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.prod-price{font-size:15px;font-weight:800;color:var(--t1)}
-.prod-mrp{font-size:11px;color:var(--t3);text-decoration:line-through}
-.prod-disc{font-size:11px;font-weight:700;color:var(--grn)}
-.prod-rating{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600}
-.prod-rating-box{background:var(--grn);color:#fff;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:700}
-.prod-rating-ct{color:var(--t3)}
-.btn-add-cart{width:100%;padding:9px;background:transparent;border:1.5px solid var(--fk);border-radius:8px;font-size:12px;font-weight:700;color:var(--fk);cursor:pointer;font-family:inherit;transition:all .2s;margin-top:8px}
-.btn-add-cart:hover{background:var(--fkd);transform:none}
-.btn-add-cart.added{background:var(--fk);color:#fff}
-.prod-wishlist{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;backdrop-filter:blur(4px)}
-.prod-wishlist:hover{background:rgba(255,255,255,.15)}
-
-/* ─ DEAL CARDS (horizontal scroll) ─ */
-.deal-row{display:flex;gap:10px;overflow-x:auto;padding:0 14px 14px;scrollbar-width:none}
-.deal-row::-webkit-scrollbar{display:none}
-.deal-card{background:var(--c2);border:1px solid var(--bd2);border-radius:14px;padding:14px;flex-shrink:0;width:140px;cursor:pointer;transition:all .2s}
-.deal-card:hover{border-color:var(--bd3);transform:translateY(-2px)}
-.deal-ic{font-size:40px;text-align:center;margin-bottom:8px}
-.deal-name{font-size:12px;font-weight:700;margin-bottom:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.deal-price{font-size:14px;font-weight:800;color:var(--fk)}
-.deal-disc{font-size:10px;font-weight:700;color:var(--grn)}
-
-/* ─ MARKET LIST ─ */
-.mkt-card{background:var(--c2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin:0 14px 10px}
-.mkt-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--bd);transition:background .15s;cursor:pointer}
-.mkt-row:last-child{border-bottom:none}
-.mkt-row:hover{background:var(--c3)}
-
-/* ─ FIELD CARDS ─ */
-.fc{background:var(--c2);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:0 14px 10px;cursor:pointer;transition:all .25s}
-.fc:hover{border-color:var(--bd3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(40,116,240,.1)}
-.fc:active{transform:scale(.99)}
-.fc-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.fc-name{font-size:15px;font-weight:700}
-.fc-meta{font-size:12px;color:var(--t3);margin-top:2px}
-.bdg{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
-.bdg-O{background:rgba(0,178,72,.12);color:var(--grn)}
-.bdg-R{background:rgba(255,59,59,.12);color:var(--red)}
-.bdg-F{background:rgba(40,116,240,.12);color:var(--fk)}
-.fc-body{display:flex;align-items:center;gap:12px}
-.pb{background:var(--c3);border-radius:4px;height:5px;overflow:hidden;flex:1}
-.pb-f{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--fk3),var(--fk))}
-
-/* ─ AI CHAT ─ */
-.cm{display:flex;gap:10px;align-items:flex-end;margin-bottom:12px}
-.cm.u{flex-direction:row-reverse}
-.cm-av{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--fk3),var(--fk));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.cm-bub{max-width:78%;padding:12px 15px;font-size:14px;line-height:1.65;word-break:break-word}
-.cm.ai .cm-bub{background:var(--c2);border:1px solid var(--bd);border-radius:4px 16px 16px 16px;color:var(--t2)}
-.cm.u .cm-bub{background:linear-gradient(135deg,var(--fk3),var(--fk));color:#fff;border-radius:16px 4px 16px 16px;font-weight:500}
-.td{width:7px;height:7px;border-radius:50%;background:var(--fk);animation:tdB 1.2s ease-in-out infinite}
-.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
-@keyframes tdB{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1.1);opacity:1}}
-.ci{flex:1;background:var(--c2);border:1.5px solid var(--bd2);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--t1);font-family:inherit;outline:none;transition:border .2s}
-.ci:focus{border-color:var(--fk)}
-.ci::placeholder{color:var(--t3)}
-.cs{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--fk3),var(--fk));border:none;color:#fff;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;box-shadow:0 4px 16px rgba(40,116,240,.3)}
-.cs:hover{transform:scale(1.06)}
-.cs:disabled{background:var(--c3);box-shadow:none;cursor:default;transform:none;color:var(--t3)}
-
-/* Weather */
-.wx-hero{background:linear-gradient(135deg,#0a1a3d,#1a3070 50%,#0a2050);border-radius:16px;padding:20px;margin:12px 14px 0;position:relative;overflow:hidden;border:1px solid rgba(40,116,240,.2)}
-.wx-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:160px;height:160px;background:rgba(40,116,240,.15);border-radius:50%;pointer-events:none}
-.wx-week{background:var(--c2);border:1px solid var(--bd);border-radius:14px;margin:12px 14px 0;overflow:hidden}
-.wx-day{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--bd);transition:background .15s}
-.wx-day:last-child{border-bottom:none}
-.wx-day:hover{background:var(--c3)}
-
-/* ─ BOTTOM NAV ─ */
-.bnav{position:fixed;bottom:0;left:0;right:0;height:calc(62px + var(--safe));background:var(--c1);border-top:1px solid var(--bd);display:flex;z-index:6000;padding-bottom:var(--safe)}
-.bi{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:8px 4px 0;border:none;background:none;font-family:inherit;transition:all .2s;position:relative}
-.bi-icon{font-size:21px;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
-.bi.on .bi-icon{transform:scale(1.15) translateY(-2px)}
-.bi-lbl{font-size:10px;font-weight:700;letter-spacing:.2px;color:var(--t3);transition:color .2s}
-.bi.on .bi-lbl{color:var(--fk)}
-.bi-bar{position:absolute;top:4px;width:4px;height:4px;border-radius:2px;background:var(--fk);transition:all .3s cubic-bezier(.34,1.56,.64,1);transform:scaleX(0)}
-.bi.on .bi-bar{transform:scaleX(2.5)}
-/* Cart badge */
-.cart-cnt{position:absolute;top:5px;right:calc(50% - 16px);min-width:16px;height:16px;background:var(--red);border-radius:8px;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px}
-/* Hamburger */
-.hmb{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;height:24px}
-.hmb-l{height:2px;border-radius:1px;background:var(--t3);transition:background .2s}
-.hmb-l:nth-child(1){width:19px}.hmb-l:nth-child(2){width:13px}.hmb-l:nth-child(3){width:19px}
-.bi.mbi:hover .hmb-l{background:var(--fk)}
-
-/* ─ DRAWER ─ */
-.dr-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(5px)}
-.dr-ov.on{opacity:1;pointer-events:all}
-.drawer{position:fixed;bottom:0;left:0;right:0;background:var(--c1);border-top:1px solid var(--bd2);border-radius:28px 28px 0 0;z-index:9000;transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);padding-bottom:calc(24px + var(--safe))}
-.drawer.on{transform:translateY(0)}
-.dr-handle{width:36px;height:4px;background:var(--t3);border-radius:2px;margin:12px auto 16px;opacity:.4}
-.dr-title{font-size:17px;font-weight:800;padding:0 20px 12px;border-bottom:1px solid var(--bd)}
-.dr-item{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;transition:background .15s}
-.dr-item:hover{background:var(--c2)}
-.dr-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-
-/* ─ MODAL ─ */
-.mod-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9500;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px)}
-.mod-ov.on{opacity:1;pointer-events:all}
-.mod{background:var(--c1);border-radius:24px 24px 0 0;width:100%;max-height:85vh;overflow-y:auto;padding:0 20px calc(32px + var(--safe));transform:translateY(40px);transition:transform .32s cubic-bezier(.4,0,.2,1)}
-.mod-ov.on .mod{transform:translateY(0)}
-.mod-handle{width:36px;height:4px;background:var(--t3);border-radius:2px;margin:12px auto 18px;opacity:.4}
-.mod-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bd);font-size:14px}
-.mod-row span:first-child{color:var(--t3)}
-.mod-row span:last-child{font-weight:600}
-
-/* ─ CART TOAST ─ */
-.toast{position:fixed;bottom:calc(75px + var(--safe));left:50%;transform:translateX(-50%) translateY(20px);background:var(--c2);border:1px solid var(--bd3);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;backdrop-filter:blur(12px)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ─ LIVE BADGE ─ */
-.live-b{display:inline-flex;align-items:center;gap:4px;background:rgba(40,116,240,.15);border:1px solid rgba(40,116,240,.25);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--fk)}
-.ldot{width:5px;height:5px;border-radius:50%;background:var(--fk);animation:pulse 1.5s ease infinite}
-
-/* Skeleton */
-.skel{background:linear-gradient(90deg,var(--c2) 25%,var(--c3) 50%,var(--c2) 75%);background-size:200%;animation:shimmer 1.5s infinite;border-radius:8px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartKisan – Smart Farming for Indian Farmers</title>
+  <meta name="description" content="SmartKisan helps Indian farmers with modern farming guidance, crop advisory, weather alerts, and market price information." />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- ══════════ ONBOARDING ══════════ -->
-<div id="ob">
-  <div class="ob-header">
-    <div class="ob-logo">🌾</div>
-    <div class="ob-brand">Mi<em>tti</em></div>
-    <div class="ob-tagline">SMART FARMING · INDIA 🇮🇳</div>
-  </div>
-  <div class="ob-body">
-    <!-- Progress dots -->
-    <div class="ob-prog" id="ob-prog">
-      <div class="ob-pd on"></div><div class="ob-pd"></div><div class="ob-pd"></div><div class="ob-pd"></div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🌾</span>
+        Smart<span>Kisan</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </div>
-
-    <!-- Step 1: Name + Phone -->
-    <div class="ob-step on" id="s1">
-      <div class="ob-h">Create your account</div>
-      <div class="ob-s">Enter your details to start farming smarter with Mitti</div>
-      <div class="fl"><label class="fl-l">Full Name</label>
-        <input class="fi" id="su-n" type="text" placeholder="e.g. Ramesh Kumar"/>
-        <div class="fi-e" id="su-n-e">Please enter your name</div>
-      </div>
-      <div class="fl"><label class="fl-l">Mobile Number</label>
-        <div class="fi-row">
-          <input class="fi fi-pre" value="+91" readonly/>
-          <input class="fi" id="su-p" type="tel" placeholder="9876543210" maxlength="10"/>
-        </div>
-        <div class="fi-e" id="su-p-e">Enter valid 10-digit number</div>
-      </div>
-    </div>
-
-    <!-- Step 2: OTP -->
-    <div class="ob-step" id="s2" style="text-align:center">
-      <div style="font-size:64px;margin:16px 0 12px">📲</div>
-      <div class="ob-h" style="text-align:center">Verify OTP</div>
-      <div style="font-size:13px;color:var(--t2);margin-bottom:16px;line-height:1.7" id="otp-msg">OTP sent to your mobile</div>
-      <div class="otp-row" id="otp-boxes"></div>
-      <div style="text-align:center;margin-bottom:10px">
-        <span style="background:var(--c2);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--t3)" id="otp-tmr">Resend in 30s</span>
-      </div>
-      <div style="font-size:12px;color:var(--t3);margin-bottom:12px">
-        Didn't receive? <span id="rs-btn" style="color:var(--fk);font-weight:700;cursor:pointer;opacity:.4" onclick="resendOtp()">Resend OTP</span>
-      </div>
-      <div class="otp-demo">🔒 <span>Demo OTP: <strong style="color:var(--fk);letter-spacing:4px;font-size:15px">123456</strong></span></div>
-    </div>
-
-    <!-- Step 3: Language -->
-    <div class="ob-step" id="s3">
-      <div style="font-size:48px;text-align:center;margin:16px 0 12px">🗣️</div>
-      <div class="ob-h">Choose your language</div>
-      <div class="ob-s">Select all languages you want to use</div>
-      <div class="lg" id="lang-grid"></div>
-      <div style="font-size:13px;color:var(--t3);margin-bottom:20px;font-weight:600">
-        <span id="sel-n" style="color:var(--fk)">0</span> language(s) selected
-      </div>
-    </div>
-
-    <!-- Step 4: Location -->
-    <div class="ob-step" id="s4">
-      <div style="font-size:48px;text-align:center;margin:16px 0 12px">📍</div>
-      <div class="ob-h">Your farm location</div>
-      <div class="ob-s">Enter your PIN code to get local weather, rain alerts & mandi prices</div>
-      <div class="fl"><label class="fl-l">PIN Code</label>
-        <input class="fi" id="loc-pin" type="tel" placeholder="e.g. 721301" maxlength="6" oninput="pinLook(this.value)"/>
-        <div class="pm" id="pm-load" style="color:var(--t3)">🔍 Looking up...</div>
-        <div class="pm" id="pm-ok" style="color:var(--fk)"></div>
-        <div class="pm" id="pm-err" style="color:var(--red)">⚠️ PIN not found. Fill below manually.</div>
-      </div>
-      <div class="lc-found" id="loc-found">
-        <div style="font-size:11px;font-weight:800;color:var(--fk);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase">📍 Location Confirmed</div>
-        <div id="loc-det" style="font-size:15px;font-weight:700"></div>
-        <div id="loc-wx" style="display:flex;align-items:center;gap:12px;padding-top:10px;margin-top:10px;border-top:1px solid rgba(40,116,240,.2)"></div>
-      </div>
-      <div class="fl" style="margin-top:12px"><label class="fl-l">State</label>
-        <select class="fi" id="loc-st" style="cursor:pointer">
-          <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
-          <option>Bihar</option><option>Chhattisgarh</option><option>Gujarat</option>
-          <option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option>
-          <option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option>
-          <option>Maharashtra</option><option>Odisha</option><option>Punjab</option>
-          <option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option>
-          <option>Uttar Pradesh</option><option>Uttarakhand</option>
-          <option selected>West Bengal</option>
-        </select>
-      </div>
-      <div class="fl"><label class="fl-l">City / District</label>
-        <input class="fi" id="loc-city" type="text" placeholder="e.g. Kharagpur"/>
-        <div class="fi-e" id="loc-city-e">Please enter your city</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ob-foot">
-    <button class="btn-fk" id="ob-next" onclick="obNext()">Continue →</button>
-    <button class="btn-o" id="ob-back" onclick="obBack()" style="display:none">← Go Back</button>
-  </div>
-</div>
-
-<!-- ══════════ MAIN APP ══════════ -->
-<div id="app">
-  <!-- Flipkart-style header -->
-  <div class="fk-header">
-    <div class="fk-header-top">
-      <div class="fk-logo-area">
-        <div class="fk-logo-box">🌾</div>
-        <div class="fk-brand-txt">Mi<em>tti</em></div>
-      </div>
-      <div class="fk-search">
-        <span class="fk-search-icon">🔍</span>
-        <input class="fk-search-input" id="fk-srch" placeholder="Search crops, seeds, fertilizers…" oninput="onSearch(this.value)"/>
-      </div>
-      <div class="fk-header-right">
-        <button class="fk-icon-btn" onclick="goTab('shop',document.querySelector('[data-t=shop]'))" title="Cart">
-          🛒<div class="fk-notif-dot" id="cart-dot" style="display:none"></div>
-        </button>
-        <button class="fk-icon-btn" onclick="openDrawer()">☰</button>
-      </div>
-    </div>
-    <div class="fk-loc-bar">
-      <span class="fk-loc-pin">📍</span>
-      <span id="fk-loc">Loading location…</span>
-      <span style="margin-left:4px;opacity:.6">·</span>
-      <button class="lp" id="lp-btn" onclick="cycleLang()" style="background:rgba(255,255,255,.12);border:none;border-radius:16px;padding:3px 10px;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);cursor:pointer;font-family:inherit;margin-left:4px">EN</button>
-    </div>
-  </div>
-
-  <div class="ap-screens">
-    <div class="sc on" id="sc-home"></div>
-    <div class="sc" id="sc-fields"></div>
-    <div class="sc" id="sc-weather"></div>
-    <div class="sc" id="sc-market"></div>
-    <div class="sc" id="sc-shop"></div>
-    <div class="sc" id="sc-ai"></div>
-  </div>
-
-  <!-- Bottom Nav — 3-line menu LAST -->
-  <nav class="bnav">
-    <button class="bi on" data-t="home" onclick="goTab('home',this)">
-      <div class="bi-bar"></div><div class="bi-icon">🏠</div><div class="bi-lbl" id="bn-home">Home</div>
-    </button>
-    <button class="bi" data-t="fields" onclick="goTab('fields',this)">
-      <div class="bi-bar"></div><div class="bi-icon">🌾</div><div class="bi-lbl" id="bn-fields">Fields</div>
-    </button>
-    <button class="bi" data-t="weather" onclick="goTab('weather',this)">
-      <div class="bi-bar"></div><div class="bi-icon">🌤</div><div class="bi-lbl" id="bn-weather">Weather</div>
-    </button>
-    <button class="bi" data-t="market" onclick="goTab('market',this)">
-      <div class="bi-bar"></div><div class="bi-icon">📊</div><div class="bi-lbl" id="bn-market">Market</div>
-    </button>
-    <button class="bi" data-t="shop" onclick="goTab('shop',this)">
-      <div class="bi-bar"></div>
-      <div class="bi-icon" style="position:relative">🛒<span class="cart-cnt" id="cart-badge" style="display:none">0</span></div>
-      <div class="bi-lbl" id="bn-shop">Shop</div>
-    </button>
-    <!-- ★ THREE-LINE MENU — LAST ★ -->
-    <button class="bi mbi" onclick="openDrawer()">
-      <div class="bi-bar" style="opacity:0"></div>
-      <div class="bi-icon"><div class="hmb"><div class="hmb-l"></div><div class="hmb-l"></div><div class="hmb-l"></div></div></div>
-      <div class="bi-lbl" id="bn-menu">Menu</div>
-    </button>
   </nav>
-</div>
 
-<!-- Cart toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Drawer -->
-<div class="dr-ov" id="dr-ov" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
-  <div class="dr-handle"></div>
-  <div class="dr-title">Menu</div>
-  <div class="dr-item" onclick="goTab('ai',document.querySelector('[data-t=ai]'));if(!document.querySelector('[data-t=ai]'))goTab('ai',null);closeDrawer()">
-    <div class="dr-ic" style="background:rgba(40,116,240,.12)">🤖</div>
-    <div><div style="font-size:15px;font-weight:600">KisanAI Chat</div><div style="font-size:12px;color:var(--t3)">Ask in any Indian language</div></div>
-  </div>
-  <div class="dr-item" onclick="closeDrawer();apiPrompt()">
-    <div class="dr-ic" style="background:rgba(255,107,0,.12)">🔑</div>
-    <div><div style="font-size:15px;font-weight:600">API Key Settings</div><div style="font-size:12px;color:var(--t3)">Update Anthropic key</div></div>
-  </div>
-  <div class="dr-item" onclick="closeDrawer();cycleLang()">
-    <div class="dr-ic" style="background:rgba(40,116,240,.12)">🗣️</div>
-    <div><div style="font-size:15px;font-weight:600">Switch Language</div><div style="font-size:12px;color:var(--t3)">Cycle selected languages</div></div>
-  </div>
-  <div class="dr-item">
-    <div class="dr-ic" style="background:rgba(0,178,72,.12)">📍</div>
-    <div><div style="font-size:15px;font-weight:600">My Location</div><div style="font-size:12px;color:var(--t3)" id="dr-loc-s"></div></div>
-  </div>
-  <div class="dr-item" onclick="if(confirm('Logout from Mitti?')){localStorage.clear();location.reload()}">
-    <div class="dr-ic" style="background:rgba(255,59,59,.12)">🚪</div>
-    <div><div style="font-size:15px;font-weight:600">Logout</div></div>
-  </div>
-</div>
-
-<!-- Field Modal -->
-<div class="mod-ov" id="fmod-ov" onclick="closeFMod()">
-  <div class="mod" onclick="event.stopPropagation()" id="fmod-body"><div class="mod-handle"></div></div>
-</div>
-
-<script>
-/* ════ STATE ════ */
-const U={name:'',phone:'',langs:['en'],state:'West Bengal',city:'Kharagpur',pin:'721301',wx:{temp:'33',wx:'Cloudy',hum:'76'},apiKey:''};
-let lang='en',curTab='home',chatMsgs=[],mktF='All',mktQ='',obIdx=0,cartItems=[],shopCat='All';
-const OB=['s1','s2','s3','s4'];
-let bannerTimer=null,curBanner=0;
-
-/* ════ TRANSLATIONS ════ */
-const T={
-  en:{home:"Home",fields:"Fields",weather:"Weather",market:"Market",shop:"Shop",ai:"AI",menu:"Menu",
-    gm:"Good Morning",ga:"Good Afternoon",ge:"Good Evening",farmer:"Farmer",
-    moist:"Moisture",alerts:"Alerts",my_f:"My Fields",see_all:"See All",
-    ch:"Crop Health",li:"Last irrigated",opt:"Optimal",ref:"Needs Water",ful:"Full",
-    cloud:"Mostly Cloudy",feels:"Feels like",uv:"UV",rise:"Sunrise",sunset:"Sunset",
-    fcast:"7-Day Forecast",ftips:"Farming Tips",mkt:"Market Prices",mkt_s:"Live mandi rates",
-    srch:"Search crop…",unit:"₹/quintal",stable:"Stable",gain:"TOP GAINER",lose:"TOP FALL",
-    ai_t:"KisanAI",ai_s:"Ask in any Indian language",ai_ph:"Ask about crops, weather, market…",
-    ai_gr:"Namaste! I'm KisanAI 🌾 Ask me anything about farming in any language!",
-    sugg:["When to irrigate?","Crop disease?","Best fertilizer?","Today's prices?"],
-    fd:"Fertilizer Due",pr:"Pest Risk",lo:"Low",d5:"In 5 days",irr:"💧 Schedule Irrigation",
-    rain:"Rain",pc:"Partly Cloudy",sun:"Sunny",live:"LIVE",
-    add_cart:"Add to Cart",view_all:"View All",deals:"Today's Deals",trending:"Trending"},
-  hi:{home:"होम",fields:"खेत",weather:"मौसम",market:"बाज़ार",shop:"शॉप",ai:"AI",menu:"मेनू",
-    gm:"सुप्रभात",ga:"नमस्कार",ge:"शुभ संध्या",farmer:"किसान",
-    moist:"नमी",alerts:"अलर्ट",my_f:"मेरे खेत",see_all:"सभी देखें",
-    ch:"फसल स्वास्थ्य",li:"अंतिम सिंचाई",opt:"उत्तम",ref:"पानी चाहिए",ful:"पूर्ण",
-    cloud:"बादल",feels:"महसूस",uv:"UV",rise:"सूर्योदय",sunset:"सूर्यास्त",
-    fcast:"7 दिन",ftips:"कृषि सलाह",mkt:"मंडी भाव",mkt_s:"लाइव मंडी रेट",
-    srch:"फसल खोजें…",unit:"₹/क्विंटल",stable:"स्थिर",gain:"सबसे ऊपर",lose:"सबसे नीचे",
-    ai_t:"किसानAI",ai_s:"किसी भी भाषा में पूछें",ai_ph:"फसल, मौसम…",
-    ai_gr:"नमस्ते! मैं किसानAI हूँ 🌾 किसी भी भाषा में खेती के बारे में पूछें!",
-    sugg:["सिंचाई कब?","फसल रोग?","खाद?","मंडी भाव?"],
-    fd:"खाद",pr:"कीट",lo:"कम",d5:"5 दिन में",irr:"💧 सिंचाई",
-    rain:"बारिश",pc:"आंशिक बादल",sun:"धूप",live:"लाइव",
-    add_cart:"कार्ट में जोड़ें",view_all:"सभी देखें",deals:"आज के डील",trending:"ट्रेंडिंग"},
-  bn:{home:"হোম",fields:"মাঠ",weather:"আবহাওয়া",market:"বাজার",shop:"শপ",ai:"AI",menu:"মেনু",
-    gm:"শুভ সকাল",ga:"শুভ বিকাল",ge:"শুভ সন্ধ্যা",farmer:"কৃষক",
-    moist:"আর্দ্রতা",alerts:"সতর্কতা",my_f:"আমার মাঠ",see_all:"সব দেখুন",
-    ch:"ফসলের স্বাস্থ্য",li:"শেষ সেচ",opt:"সর্বোত্তম",ref:"পানি লাগবে",ful:"পরিপূর্ণ",
-    cloud:"মেঘলা",feels:"অনুভূত",uv:"UV",rise:"সূর্যোদয়",sunset:"সূর্যাস্ত",
-    fcast:"৭ দিনের পূর্বাভাস",ftips:"কৃষি পরামর্শ",mkt:"বাজার মূল্য",mkt_s:"লাইভ মান্ডি",
-    srch:"ফসল খুঁজুন…",unit:"₹/কুইন্টাল",stable:"স্থিতিশীল",gain:"শীর্ষ লাভ",lose:"সর্বাধিক পতন",
-    ai_t:"কিসানAI",ai_s:"যেকোনো ভাষায়",ai_ph:"ফসল, আবহাওয়া…",
-    ai_gr:"নমস্কার! আমি কিসানAI 🌾 যেকোনো ভাষায় কৃষি বিষয়ে জিজ্ঞেস করুন!",
-    sugg:["কখন সেচ?","ফসলের রোগ?","সার?","বাজার মূল্য?"],
-    fd:"সার",pr:"কীটপতঙ্গ",lo:"কম",d5:"৫ দিনে",irr:"💧 সেচ",
-    rain:"বৃষ্টি",pc:"আংশিক মেঘলা",sun:"রৌদ্রোজ্জ্বল",live:"লাইভ",
-    add_cart:"কার্টে যোগ করুন",view_all:"সব দেখুন",deals:"আজকের ডিল",trending:"ট্রেন্ডিং"},
-};
-const LANGS=[
-  {c:'hi',n:'Hindi',v:'हिन्दी'},{c:'bn',n:'Bengali',v:'বাংলা'},
-  {c:'te',n:'Telugu',v:'తెలుగు'},{c:'mr',n:'Marathi',v:'मराठी'},
-  {c:'ta',n:'Tamil',v:'தமிழ்'},{c:'gu',n:'Gujarati',v:'ગુજરાતી'},
-  {c:'kn',n:'Kannada',v:'ಕನ್ನಡ'},{c:'ml',n:'Malayalam',v:'മലയാളം'},
-  {c:'pa',n:'Punjabi',v:'ਪੰਜਾਬੀ'},{c:'or',n:'Odia',v:'ଓଡ଼ିଆ'},
-  {c:'as',n:'Assamese',v:'অসমীয়া'},{c:'en',n:'English',v:'English'},
-];
-function t(k){return(T[lang]||T.en)[k]||T.en[k]||k}
-
-/* ════ DATA ════ */
-const PINS={
-  '721301':{city:'Kharagpur',dist:'Paschim Medinipur',state:'West Bengal',temp:'33',wx:'Cloudy',hum:'76'},
-  '700001':{city:'Kolkata',dist:'Kolkata',state:'West Bengal',temp:'31',wx:'Partly Cloudy',hum:'80'},
-  '110001':{city:'New Delhi',dist:'Central Delhi',state:'Delhi',temp:'38',wx:'Sunny',hum:'45'},
-  '400001':{city:'Mumbai',dist:'Mumbai City',state:'Maharashtra',temp:'29',wx:'Rainy',hum:'88'},
-  '600001':{city:'Chennai',dist:'Chennai',state:'Tamil Nadu',temp:'35',wx:'Sunny',hum:'70'},
-  '500001':{city:'Hyderabad',dist:'Hyderabad',state:'Telangana',temp:'36',wx:'Sunny',hum:'50'},
-  '380001':{city:'Ahmedabad',dist:'Ahmedabad',state:'Gujarat',temp:'40',wx:'Sunny',hum:'30'},
-  '302001':{city:'Jaipur',dist:'Jaipur',state:'Rajasthan',temp:'42',wx:'Sunny',hum:'25'},
-  '226001':{city:'Lucknow',dist:'Lucknow',state:'Uttar Pradesh',temp:'37',wx:'Cloudy',hum:'55'},
-  '560001':{city:'Bengaluru',dist:'Bengaluru Urban',state:'Karnataka',temp:'28',wx:'Cloudy',hum:'65'},
-  '411001':{city:'Pune',dist:'Pune',state:'Maharashtra',temp:'32',wx:'Partly Cloudy',hum:'58'},
-  '160001':{city:'Chandigarh',dist:'Chandigarh',state:'Punjab',temp:'35',wx:'Sunny',hum:'42'},
-  '781001':{city:'Guwahati',dist:'Kamrup',state:'Assam',temp:'30',wx:'Rainy',hum:'82'},
-};
-
-const FIELDS=[
-  {id:1,name:"North Plot",crop:"Rice",area:"2.4 ha",moisture:72,status:"O",health:88,irr:"2h ago",stage:"Tillering"},
-  {id:2,name:"South Field",crop:"Wheat",area:"1.8 ha",moisture:45,status:"R",health:62,irr:"1 day ago",stage:"Germination"},
-  {id:3,name:"East Block",crop:"Maize",area:"3.1 ha",moisture:91,status:"F",health:95,irr:"30 min ago",stage:"Flowering"},
-  {id:4,name:"West Garden",crop:"Tomato",area:"0.6 ha",moisture:58,status:"O",health:78,irr:"4h ago",stage:"Fruiting"},
-];
-
-const MKT=[
-  {crop:"Rice",price:2180,change:+45,trend:"up",icon:"🌾",cat:"Grains"},
-  {crop:"Wheat",price:2275,change:+12,trend:"up",icon:"🌿",cat:"Grains"},
-  {crop:"Potato",price:1450,change:-80,trend:"down",icon:"🥔",cat:"Vegetables"},
-  {crop:"Tomato",price:3200,change:+320,trend:"up",icon:"🍅",cat:"Vegetables"},
-  {crop:"Onion",price:2800,change:0,trend:"stable",icon:"🧅",cat:"Vegetables"},
-  {crop:"Mustard",price:5400,change:+120,trend:"up",icon:"🌻",cat:"Oilseeds"},
-  {crop:"Maize",price:1890,change:-30,trend:"down",icon:"🌽",cat:"Grains"},
-  {crop:"Jute",price:4600,change:+200,trend:"up",icon:"🪢",cat:"Fibre"},
-];
-
-const WXD=[
-  {d:"Mon",ic:"☀",hi:34,lo:24},{d:"Tue",ic:"⛅",hi:31,lo:22},{d:"Wed",ic:"🌧",hi:27,lo:20},
-  {d:"Thu",ic:"🌧",hi:26,lo:19},{d:"Fri",ic:"⛅",hi:30,lo:22},{d:"Sat",ic:"☀",hi:35,lo:25},{d:"Sun",ic:"☀",hi:36,lo:26},
-];
-
-/* ════ SHOP PRODUCTS ════ */
-const PRODUCTS=[
-  {id:1,name:"Urea Fertilizer 50kg Bag",sub:"By IndiaFert",icon:"🌱",price:1299,mrp:1799,disc:27,rating:4.3,reviews:2841,cat:"Fertilizer",badge:""},
-  {id:2,name:"Hybrid Tomato Seeds (100g)",sub:"By AgroSeeds",icon:"🍅",price:249,mrp:399,disc:37,rating:4.5,reviews:1542,cat:"Seeds",badge:"hot"},
-  {id:3,name:"Manual Seed Sprayer Pump",sub:"By FarmTools",icon:"💦",price:899,mrp:1499,disc:40,rating:4.1,reviews:876,cat:"Tools",badge:""},
-  {id:4,name:"NPK 19-19-19 Fertilizer 5kg",sub:"By KisanChem",icon:"⚗️",price:699,mrp:999,disc:30,rating:4.4,reviews:3201,cat:"Fertilizer",badge:""},
-  {id:5,name:"Paddy Rice Seeds BPT 5204",sub:"By TamilSeeds",icon:"🌾",price:399,mrp:599,disc:33,rating:4.6,reviews:4521,cat:"Seeds",badge:"hot"},
-  {id:6,name:"Garden Trowel Set (3 pcs)",sub:"By GreenTools",icon:"🛠️",price:299,mrp:499,disc:40,rating:4.2,reviews:654,cat:"Tools",badge:"new"},
-  {id:7,name:"Drip Irrigation Kit 50m",sub:"By AquaFarm",icon:"💧",price:2199,mrp:3499,disc:37,rating:4.7,reviews:1832,cat:"Irrigation",badge:""},
-  {id:8,name:"Wheat Seeds HD 2967 (5kg)",sub:"By PunjabSeeds",icon:"🌿",price:449,mrp:649,disc:30,rating:4.5,reviews:2105,cat:"Seeds",badge:""},
-  {id:9,name:"Potassium Sulphate 1kg",sub:"By KisanChem",icon:"🧪",price:349,mrp:499,disc:30,rating:4.0,reviews:342,cat:"Fertilizer",badge:"new"},
-  {id:10,name:"Solar Pest Repeller",sub:"By EcoFarm",icon:"☀️",price:599,mrp:999,disc:40,rating:4.3,reviews:987,cat:"Pesticides",badge:""},
-];
-
-const BANNERS=[
-  {bg:"linear-gradient(135deg,#0d3fa8,#2874F0)",icon:"🌾",title:"Kisan Sale",sub:"Up to 50% off on seeds & fertilizers",tag:"SALE"},
-  {bg:"linear-gradient(135deg,#b34000,#FF6B00)",icon:"🚜",title:"Farm Equipment",sub:"Best prices on tools & machinery",tag:"DEALS"},
-  {bg:"linear-gradient(135deg,#006620,#00B248)",icon:"💧",title:"Drip Irrigation",sub:"Save water, grow more with smart kits",tag:"NEW"},
-  {bg:"linear-gradient(135deg,#4a0080,#9C27B0)",icon:"🌱",title:"Premium Seeds",sub:"Certified hybrid seeds for better yield",tag:"HOT"},
-];
-
-const SHOP_CATS=['All','Seeds','Fertilizer','Tools','Irrigation','Pesticides'];
-
-/* ════ ONBOARDING ENGINE ════ */
-function showObStep(i){
-  document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('on'));
-  document.getElementById(OB[i]).classList.add('on');
-  const dots=document.querySelectorAll('.ob-pd');
-  dots.forEach((d,j)=>d.classList.toggle('on',j<=i));
-  document.getElementById('ob-next').textContent=i===OB.length-1?'Finish ✓':'Continue →';
-  document.getElementById('ob-back').style.display=i>0?'block':'none';
-}
-
-function obBack(){if(obIdx>0){obIdx--;showObStep(obIdx);}}
-function obNext(){
-  if(obIdx===0)doS1();
-  else if(obIdx===1)doOtp();
-  else if(obIdx===2)doLang();
-  else if(obIdx===3)doLoc();
-}
-function advance(){obIdx++;showObStep(obIdx);}
-
-/* OTP */
-(function(){
-  const w=document.getElementById('otp-boxes');
-  for(let i=0;i<6;i++){
-    const b=document.createElement('input');
-    b.className='otp-b';b.type='tel';b.maxLength=1;b.id='ot'+i;
-    b.oninput=()=>{if(b.value){b.classList.add('ok');if(i<5)document.getElementById('ot'+(i+1)).focus();}else b.classList.remove('ok');}
-    b.onkeydown=e=>{if(e.key==='Backspace'&&!b.value&&i>0)document.getElementById('ot'+(i-1)).focus();}
-    w.appendChild(b);
-  }
-})();
-let _oi=null,oSec=30;
-function startTimer(){
-  clearInterval(_oi);oSec=30;
-  const el=document.getElementById('otp-tmr'),rb=document.getElementById('rs-btn');
-  if(rb){rb.style.opacity='.4';rb.style.cursor='default';}
-  _oi=setInterval(()=>{oSec--;if(el)el.textContent='Resend in '+oSec+'s';if(oSec<=0){clearInterval(_oi);if(el)el.textContent='';if(rb){rb.style.opacity='1';rb.style.cursor='pointer';}}},1000);
-}
-function resendOtp(){if(oSec>0)return;startTimer();alert('OTP resent! Demo: 123456');}
-
-/* Lang grid */
-(function(){
-  const g=document.getElementById('lang-grid');
-  g.innerHTML=LANGS.map(l=>`<div class="lc" id="lc-${l.c}" onclick="toggleLC('${l.c}')">
-    <div class="lc-ck">✓</div><div class="lc-n">${l.n}</div><div class="lc-v">${l.v}</div>
-  </div>`).join('');
-  toggleLC('en');
-})();
-function toggleLC(c){
-  const el=document.getElementById('lc-'+c),i=U.langs.indexOf(c);
-  if(i>-1){if(U.langs.length>1){U.langs.splice(i,1);el.classList.remove('on');}}
-  else{U.langs.push(c);el.classList.add('on');}
-  document.getElementById('sel-n').textContent=U.langs.length;
-}
-
-/* PIN */
-let _pt=null;
-function pinLook(v){
-  clearTimeout(_pt);
-  ['pm-load','pm-ok','pm-err'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  document.getElementById('loc-found').classList.remove('on');
-  if(v.length===6){
-    document.getElementById('pm-load').classList.add('on');
-    _pt=setTimeout(()=>{
-      document.getElementById('pm-load').classList.remove('on');
-      const d=PINS[v];
-      if(d){
-        document.getElementById('pm-ok').textContent='✅ '+d.city+', '+d.dist;
-        document.getElementById('pm-ok').classList.add('on');
-        document.getElementById('loc-det').textContent=d.city+', '+d.dist+', '+d.state;
-        const ic=/rain/i.test(d.wx)?'🌧':/sun|hot/i.test(d.wx)?'☀️':'⛅';
-        document.getElementById('loc-wx').innerHTML=`<span style="font-size:36px">${ic}</span><div><div style="font-size:22px;font-weight:800;color:var(--fk)">${d.temp}°C</div><div style="font-size:12px;color:var(--t2);margin-top:2px">${d.wx} · ${d.hum}% humidity</div></div>`;
-        document.getElementById('loc-found').classList.add('on');
-        document.getElementById('loc-city').value=d.city;
-        document.getElementById('loc-st').value=d.state;
-        U.city=d.city;U.state=d.state;U.pin=v;U.wx=d;
-      }else document.getElementById('pm-err').classList.add('on');
-    },600);
-  }
-}
-
-function doS1(){
-  let ok=true;
-  const n=document.getElementById('su-n').value.trim();
-  const p=document.getElementById('su-p').value.trim();
-  if(!n){se('su-n','su-n-e');ok=false;}else ce('su-n','su-n-e');
-  if(!/^\d{10}$/.test(p)){se('su-p','su-p-e');ok=false;}else ce('su-p','su-p-e');
-  if(!ok)return;
-  U.name=n;U.phone=p;
-  document.getElementById('otp-msg').textContent='OTP sent to +91 '+p;
-  startTimer();advance();
-}
-function doOtp(){
-  let otp='';for(let i=0;i<6;i++)otp+=(document.getElementById('ot'+i)?.value||'');
-  if(otp.length<6){alert('Enter 6-digit OTP');return;}
-  if(otp!=='123456'){
-    for(let i=0;i<6;i++){const b=document.getElementById('ot'+i);if(b){b.style.borderColor='var(--red)';b.value='';b.classList.remove('ok');}}
-    alert('Wrong OTP. Demo: 123456');return;
-  }
-  clearInterval(_oi);advance();
-}
-function doLang(){if(!U.langs.length){alert('Select at least one language');return;}lang=U.langs[0];advance();}
-function doLoc(){
-  const c=document.getElementById('loc-city').value.trim();
-  if(!c){se('loc-city','loc-city-e');return;}
-  ce('loc-city','loc-city-e');
-  U.city=c;U.state=document.getElementById('loc-st').value;
-  U.pin=document.getElementById('loc-pin').value||'—';
-  if(!U.wx)U.wx={temp:'33',wx:'Cloudy',hum:'76'};
-  finish();
-}
-function se(ii,ei){document.getElementById(ii)?.classList.add('bad');const e=document.getElementById(ei);if(e)e.style.display='block';}
-function ce(ii,ei){document.getElementById(ii)?.classList.remove('bad');const e=document.getElementById(ei);if(e)e.style.display='none';}
-
-function finish(){
-  localStorage.setItem('mitti_name',U.name);
-  localStorage.setItem('mitti_langs',JSON.stringify(U.langs));
-  localStorage.setItem('mitti_city',U.city);
-  localStorage.setItem('mitti_state',U.state);
-  localStorage.setItem('mitti_pin',U.pin);
-  localStorage.setItem('mitti_wx',JSON.stringify(U.wx));
-  document.getElementById('ob').style.display='none';
-  document.getElementById('app').style.display='flex';
-  lang=U.langs[0]||'en';
-  U.apiKey=localStorage.getItem('mitti_apikey')||'';
-  chatMsgs=[{role:'assistant',content:t('ai_gr')}];
-  document.getElementById('fk-loc').textContent=U.city+', '+U.state+' · PIN '+U.pin;
-  document.getElementById('dr-loc-s').textContent=U.city+', '+U.state+' · '+U.pin;
-  updateBnav();renderTab('home');
-  startBannerAuto();
-}
-
-/* ════ MAIN APP ════ */
-function updateBnav(){
-  ['home','fields','weather','market','shop','ai','menu'].forEach(k=>{
-    const el=document.getElementById('bn-'+k);if(el)el.textContent=t(k);
-  });
-  document.getElementById('lp-btn').textContent=(LANGS.find(l=>l.c===lang)?.v||lang).substring(0,8);
-}
-function goTab(id,btn){
-  document.querySelectorAll('.bi').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
-  const sc=document.getElementById('sc-'+id);
-  if(sc){sc.classList.add('on');sc.scrollTop=0;}
-  curTab=id;
-  renderTab(id);
-  if(id==='home')startBannerAuto();else stopBannerAuto();
-}
-function cycleLang(){
-  const av=U.langs.length?U.langs:['en'];
-  lang=av[(av.indexOf(lang)+1)%av.length];
-  chatMsgs=[{role:'assistant',content:t('ai_gr')}];
-  updateBnav();renderTab(curTab);
-}
-function onSearch(v){
-  if(v.trim()){goTab('shop',document.querySelector('[data-t=shop]'));mktQ=v;renderTab('shop');}
-}
-
-/* Banner */
-function startBannerAuto(){
-  stopBannerAuto();
-  bannerTimer=setInterval(()=>{
-    curBanner=(curBanner+1)%BANNERS.length;
-    moveBanner();
-  },3500);
-}
-function stopBannerAuto(){clearInterval(bannerTimer);}
-function moveBanner(){
-  const track=document.getElementById('banner-track');
-  if(!track)return;
-  track.style.transform='translateX(-'+curBanner*100+'%)';
-  document.querySelectorAll('.bdot').forEach((d,i)=>d.classList.toggle('on',i===curBanner));
-}
-
-/* Cart */
-function addToCart(id){
-  const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
-  const existing=cartItems.find(x=>x.id===id);
-  if(existing)existing.qty++;
-  else cartItems.push({...p,qty:1});
-  const cnt=cartItems.reduce((s,i)=>s+i.qty,0);
-  const badge=document.getElementById('cart-badge');
-  const dot=document.getElementById('cart-dot');
-  if(badge){badge.textContent=cnt;badge.style.display='flex';}
-  if(dot)dot.style.display='block';
-  showToast('🛒 '+p.name.substring(0,25)+'… added to cart');
-  // Update button
-  const btn=document.getElementById('cart-btn-'+id);
-  if(btn){btn.textContent='✓ Added';btn.classList.add('added');}
-}
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
-
-/* ════ HELPERS ════ */
-function ring(val,sz=58){
-  const r=(sz-8)/2,c=2*Math.PI*r,offset=c-(val/100)*c;
-  const col=val<50?'var(--red)':val>85?'var(--fk)':'var(--grn)';
-  return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="transform:rotate(-90deg)">
-    <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="rgba(40,116,240,.08)" stroke-width="6"/>
-    <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="6"
-      stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
-    <text x="${sz/2}" y="${sz/2}" text-anchor="middle" dominant-baseline="middle"
-      font-size="${sz>54?12:10}" font-weight="700" fill="${col}"
-      style="transform:rotate(90deg);transform-origin:${sz/2}px ${sz/2}px">${val}%</text>
-  </svg>`;
-}
-function bdg(s){
-  const m={O:`<span class="bdg bdg-O">${t('opt')}</span>`,R:`<span class="bdg bdg-R">${t('ref')}</span>`,F:`<span class="bdg bdg-F">${t('ful')}</span>`};
-  return m[s]||'';
-}
-function fcard(f){
-  return `<div class="fc" onclick="openFMod(${f.id})">
-    <div class="fc-h">
-      <div><div class="fc-name">${f.name}</div><div class="fc-meta">${f.crop} · ${f.area} · ${f.stage}</div></div>
-      ${bdg(f.status)}
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-emoji">🌾</span>
+      <h1>Smart Farming for <span>Every Kisan</span></h1>
+      <p>
+        SmartKisan empowers Indian farmers with modern agricultural guidance,
+        crop advisory, real-time weather alerts, and best market prices —
+        all in one place.
+      </p>
+      <div class="hero-ctas">
+        <a href="services.html" class="btn btn-primary">Explore Services</a>
+        <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20guidance"
+           class="btn btn-whatsapp" target="_blank" rel="noopener">
+          <span>💬</span> WhatsApp Us
+        </a>
+      </div>
     </div>
-    <div class="fc-body">
-      ${ring(f.moisture,56)}
-      <div style="flex:1">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.3px">${t('ch')}</span>
-          <span style="font-size:12px;font-weight:700;color:var(--fk)">${f.health}%</span>
+  </section>
+
+  <!-- Stats Strip -->
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span class="stat-num">10,000+</span>
+        <span class="stat-lbl">Farmers Helped</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">15+</span>
+        <span class="stat-lbl">States Covered</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">50+</span>
+        <span class="stat-lbl">Crops Supported</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">24/7</span>
+        <span class="stat-lbl">Expert Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Overview -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">What We Offer</h2>
+      <p class="section-sub">
+        End-to-end support for Indian farmers — from soil to sale.
+      </p>
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-icon">🌱</span>
+          <h3>Crop Advisory</h3>
+          <p>Get expert advice on which crops to grow based on your soil type, region, and season.</p>
         </div>
-        <div class="pb"><div class="pb-f" style="width:${f.health}%"></div></div>
-        <div style="font-size:11px;color:var(--t3);margin-top:5px">${t('li')}: ${f.irr}</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-/* ════ SCREENS ════ */
-function renderTab(id){
-  const el=document.getElementById('sc-'+id);if(!el)return;
-  if(id==='home')el.innerHTML=renderHome();
-  else if(id==='fields')el.innerHTML=renderFields();
-  else if(id==='weather')el.innerHTML=renderWeather();
-  else if(id==='market')el.innerHTML=renderMarket();
-  else if(id==='shop')el.innerHTML=renderShop();
-  else if(id==='ai'){el.innerHTML=renderAI();scrl();}
-}
-
-function renderHome(){
-  const h=new Date().getHours(),wx=U.wx||{temp:'33',wx:'Cloudy',hum:'76'};
-  const gr=h<12?t('gm'):h<17?t('ga'):t('ge');
-  const avgM=Math.round(FIELDS.reduce((s,f)=>s+f.moisture,0)/FIELDS.length);
-  const wxIc=/rain/i.test(wx.wx)?'🌧':/sun|hot/i.test(wx.wx)?'☀️':'⛅';
-  // Banner HTML
-  const bannerHTML=`
-  <div class="banner-wrap" id="banner-wrap">
-    <div class="banner-track" id="banner-track">
-      ${BANNERS.map((b,i)=>`
-        <div class="banner-slide" style="background:${b.bg}" onclick="goTab('shop',document.querySelector('[data-t=shop]'))">
-          <div style="position:absolute;top:10px;left:14px;font-size:10px;font-weight:800;background:rgba(255,255,255,.2);border-radius:6px;padding:2px 8px;letter-spacing:.8px;text-transform:uppercase">${b.tag}</div>
-          <div style="flex:1">
-            <div style="font-size:20px;font-weight:900;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${b.title}</div>
-            <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.5;max-width:180px">${b.sub}</div>
-          </div>
-          <div style="font-size:70px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4))">${b.icon}</div>
-        </div>`).join('')}
-    </div>
-    <div class="banner-dots">
-      ${BANNERS.map((_,i)=>`<div class="bdot ${i===curBanner?'on':''}"></div>`).join('')}
-    </div>
-  </div>`;
-  // Categories
-  const cats=[
-    {ic:'🌾',lbl:'Fields',bg:'#1a3070',tab:'fields'},
-    {ic:'🛒',lbl:t('shop'),bg:'#1a3070',tab:'shop'},
-    {ic:'🌤',lbl:t('weather'),bg:'#1a3070',tab:'weather'},
-    {ic:'📊',lbl:t('market'),bg:'#1a3070',tab:'market'},
-    {ic:'🤖',lbl:'AI',bg:'#1a3070',tab:'ai'},
-    {ic:'💧',lbl:'Drip',bg:'#1a3070',tab:'shop'},
-    {ic:'🌱',lbl:'Seeds',bg:'#1a3070',tab:'shop'},
-    {ic:'⚗️',lbl:'Fert.',bg:'#1a3070',tab:'shop'},
-  ];
-  const catHTML=`<div class="cat-row">${cats.map(c=>`
-    <div class="cat-item" onclick="goTab('${c.tab}',document.querySelector('[data-t=${c.tab}]'))">
-      <div class="cat-ic" style="background:${c.bg}">${c.ic}</div>
-      <span class="cat-lbl">${c.lbl}</span>
-    </div>`).join('')}</div>`;
-  // Deals
-  const dealHTML=`
-  <div style="padding-top:6px">
-    <div class="sec-hdr"><div class="sec-t">${t('deals')}<span class="sec-badge">HOT</span></div><div class="sec-link" onclick="goTab('shop',document.querySelector('[data-t=shop]'))">${t('view_all')}</div></div>
-    <div class="deal-row">
-      ${PRODUCTS.filter((_,i)=>i<6).map(p=>`
-        <div class="deal-card" onclick="goTab('shop',document.querySelector('[data-t=shop]'));addToCart(${p.id})">
-          <div class="deal-ic">${p.icon}</div>
-          <div class="deal-name">${p.name}</div>
-          <div class="deal-price">₹${p.price}</div>
-          <div class="deal-disc">↓ ${p.disc}% off</div>
-        </div>`).join('')}
-    </div>
-  </div>`;
-  return `
-  <!-- Banner -->
-  ${bannerHTML}
-  <!-- Categories -->
-  ${catHTML}
-  <!-- Weather strip -->
-  <div style="margin:0 14px;background:linear-gradient(135deg,#0d1a4a,#1a2a6e);border:1px solid rgba(40,116,240,.2);border-radius:14px;padding:14px 16px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="goTab('weather',document.querySelector('[data-t=weather]'))">
-    <div>
-      <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:4px">📍 ${U.city} · Live Weather</div>
-      <div style="font-size:28px;font-weight:800;color:#fff">${wx.temp}°C</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px">${wx.wx} · Humidity ${wx.hum}%</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:56px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))">${wxIc}</div>
-      <div class="live-b" style="float:right;margin-top:4px"><div class="ldot"></div>${t('live')}</div>
-    </div>
-  </div>
-  <!-- Stats -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 14px">
-    ${[['🌾',FIELDS.length,t('fields'),'var(--fk)'],['💧',avgM+'%',t('moist'),'var(--grn)'],['⚠️',2,t('alerts'),'var(--org)']].map(([ic,v,l,c],i)=>`
-      <div class="anim-up" style="background:var(--c2);border:1px solid var(--bd);border-radius:14px;padding:14px 10px;text-align:center;animation-delay:${i*.06}s">
-        <div style="font-size:20px">${ic}</div>
-        <div style="font-size:20px;font-weight:800;color:${c};margin:5px 0 2px;letter-spacing:-.3px">${v}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.3px">${l}</div>
-      </div>`).join('')}
-  </div>
-  <!-- Deals -->
-  ${dealHTML}
-  <!-- Fields preview -->
-  <div class="sec-hdr" style="margin-top:4px"><div class="sec-t">${t('my_f')}</div><div class="sec-link" onclick="goTab('fields',document.querySelector('[data-t=fields]'))">${t('see_all')}</div></div>
-  <div class="stagger" style="padding:0 0 8px">${FIELDS.slice(0,2).map(f=>fcard(f)).join('')}</div>`;
-}
-
-function renderShop(){
-  const srch=mktQ.toLowerCase();
-  const flt=PRODUCTS.filter(p=>{
-    const matchQ=!srch||p.name.toLowerCase().includes(srch)||p.sub.toLowerCase().includes(srch);
-    const matchC=shopCat==='All'||p.cat===shopCat;
-    return matchQ&&matchC;
-  });
-  return `
-  <!-- Category tabs -->
-  <div style="background:var(--c1);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:50">
-    <div class="cat-row" style="padding:10px 14px 8px;gap:0">
-      ${SHOP_CATS.map(c=>`<div class="cat-item ${shopCat===c?'on':''}" onclick="shopCat='${c}';renderTab('shop')" style="padding:0 12px">
-        <div style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;background:${shopCat===c?'var(--fk)':'var(--c2)'};color:${shopCat===c?'#fff':'var(--t3)'};border:1px solid ${shopCat===c?'var(--fk)':'var(--bd)'};white-space:nowrap;transition:all .2s">${c}</div>
-      </div>`).join('')}
-    </div>
-  </div>
-  <!-- Sort / filter bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd)">
-    <div style="font-size:13px;color:var(--t2);font-weight:500">${flt.length} products found</div>
-    <div style="display:flex;gap:8px">
-      <div style="background:var(--c2);border:1px solid var(--bd);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">Sort ↕</div>
-      <div style="background:var(--c2);border:1px solid var(--bd);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">Filter ⚙</div>
-    </div>
-  </div>
-  <!-- Product grid -->
-  <div class="prod-grid">
-    ${flt.map(p=>`
-      <div class="prod-card">
-        <button class="prod-wishlist" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'❤':'♡'">♡</button>
-        ${p.badge?`<div class="prod-badge ${p.badge==='hot'?'hot':p.badge==='new'?'new':''}">${p.badge.toUpperCase()}</div>`:''}
-        <div class="prod-img" style="background:var(--c3)">${p.icon}</div>
-        <div class="prod-name">${p.name}</div>
-        <div class="prod-sub">${p.sub}</div>
-        <div class="prod-price-row">
-          <span class="prod-price">₹${p.price.toLocaleString()}</span>
-          <span class="prod-mrp">₹${p.mrp.toLocaleString()}</span>
-          <span class="prod-disc">${p.disc}% off</span>
+        <div class="card">
+          <span class="card-icon">🌦️</span>
+          <h3>Weather Alerts</h3>
+          <p>Real-time weather forecasts and early warnings to protect your crops from rain, drought, or frost.</p>
         </div>
-        <div class="prod-rating">
-          <div class="prod-rating-box">${p.rating} ★</div>
-          <span class="prod-rating-ct">(${p.reviews.toLocaleString()})</span>
+        <div class="card">
+          <span class="card-icon">💰</span>
+          <h3>Market Prices</h3>
+          <p>Daily mandi prices and market trends so you always sell at the best rate.</p>
         </div>
-        <button class="btn-add-cart" id="cart-btn-${p.id}" onclick="addToCart(${p.id})">${t('add_cart')}</button>
-      </div>`).join('')}
-    ${!flt.length?`<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--t3);font-size:14px">No products found</div>`:''}
-  </div>`;
-}
-
-function renderMarket(){
-  const flt=MKT.filter(m=>m.crop.toLowerCase().includes(mktQ.toLowerCase())&&(mktF==='All'||m.cat===mktF));
-  const g=[...MKT].sort((a,b)=>b.change-a.change)[0];
-  const l=[...MKT].filter(m=>m.change<0).sort((a,b)=>a.change-b.change)[0];
-  return `
-  <div style="padding:12px 14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-size:18px;font-weight:800;letter-spacing:-.2px">${t('mkt')}</div>
-      <div class="live-b"><div class="ldot"></div>${t('live')}</div>
-    </div>
-    <div style="font-size:12px;color:var(--t3);margin-bottom:14px">${t('mkt_s')} · 📍 ${U.city} Mandi</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-      <div style="background:linear-gradient(135deg,rgba(0,178,72,.08),rgba(0,178,72,.04));border:1px solid rgba(0,178,72,.2);border-radius:14px;padding:14px">
-        <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--grn);margin-bottom:6px">🚀 ${t('gain')}</div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:3px">${g.crop}</div>
-        <div style="font-size:20px;font-weight:900;color:var(--grn)">₹${g.price.toLocaleString()}</div>
-        <div style="font-size:11px;font-weight:700;color:var(--grn);margin-top:3px">▲ ₹${g.change}</div>
-      </div>
-      <div style="background:linear-gradient(135deg,rgba(255,59,59,.08),rgba(255,59,59,.04));border:1px solid rgba(255,59,59,.2);border-radius:14px;padding:14px">
-        <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--red);margin-bottom:6px">📉 ${t('lose')}</div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:3px">${l.crop}</div>
-        <div style="font-size:20px;font-weight:900;color:var(--red)">₹${l.price.toLocaleString()}</div>
-        <div style="font-size:11px;font-weight:700;color:var(--red);margin-top:3px">▼ ₹${Math.abs(l.change)}</div>
-      </div>
-    </div>
-    <div style="background:var(--c2);border:1.5px solid var(--bd2);border-radius:12px;display:flex;align-items:center;gap:8px;padding:11px 14px;margin-bottom:10px">
-      <span>🔍</span>
-      <input style="border:none;outline:none;background:transparent;font-size:14px;color:var(--t1);flex:1;font-family:inherit" placeholder="${t('srch')}" value="${mktQ}" oninput="mktQ=this.value;renderTab('market')"/>
-    </div>
-    <div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none;padding-bottom:2px">
-      ${['All','Grains','Vegetables','Oilseeds','Fibre'].map(c=>`<button style="background:${mktF===c?'var(--fk)':'var(--c2)'};border:1.5px solid ${mktF===c?'var(--fk)':'var(--bd)'};border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:${mktF===c?'#fff':'var(--t3)'};cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s" onclick="mktF='${c}';renderTab('market')">${c}</button>`).join('')}
-    </div>
-  </div>
-  <div class="mkt-card">
-    ${flt.map((m,i)=>`<div class="mkt-row" style="${i===flt.length-1?'border-bottom:none':''}">
-      <span style="font-size:24px;margin-right:12px">${m.icon}</span>
-      <div style="flex:1"><div style="font-size:14px;font-weight:600">${m.crop}</div>
-        <div style="font-size:11px;color:var(--t3)">${t('unit')}</div></div>
-      <div style="text-align:right">
-        <div style="font-size:16px;font-weight:800">₹${m.price.toLocaleString()}</div>
-        <div style="font-size:11px;font-weight:700">${m.trend==='up'?`<span style="color:var(--grn)">▲ ₹${m.change}</span>`:m.trend==='down'?`<span style="color:var(--red)">▼ ₹${Math.abs(m.change)}</span>`:`<span style="color:var(--t3)">— ${t('stable')}</span>`}</div>
-      </div>
-    </div>`).join('')}
-    ${!flt.length?'<div style="text-align:center;padding:28px;color:var(--t3);font-size:13px">No crops found</div>':''}
-  </div>`;
-}
-
-function renderWeather(){
-  const wx=U.wx||{temp:'33',wx:'Cloudy',hum:'76'};
-  const wxIc=/rain/i.test(wx.wx)?'🌧':/sun|hot/i.test(wx.wx)?'☀️':'⛅';
-  return `
-  <div class="wx-hero" style="margin:12px 14px 0">
-    <div style="position:relative;z-index:1">
-      <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:8px">📍 ${U.city}, ${U.state} · PIN ${U.pin}</div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <div style="font-size:52px;font-weight:900;letter-spacing:-2px;color:#fff;line-height:1">${wx.temp}°C</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.8);margin-top:6px">${wx.wx}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px">Feels like ${parseInt(wx.temp)+3}°C</div>
+        <div class="card">
+          <span class="card-icon">🐛</span>
+          <h3>Pest &amp; Disease Help</h3>
+          <p>Identify crop diseases and get recommended treatments from agricultural experts.</p>
         </div>
-        <div style="font-size:72px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.5))">${wxIc}</div>
+        <div class="card">
+          <span class="card-icon">🏦</span>
+          <h3>Loan &amp; Scheme Info</h3>
+          <p>Information on government schemes, Kisan Credit Card, subsidies, and loans.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📱</span>
+          <h3>Easy WhatsApp Support</h3>
+          <p>Chat with our experts on WhatsApp in your local language — Hindi, Telugu, Marathi, and more.</p>
+        </div>
       </div>
-      <div style="display:flex;gap:20px;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);padding-top:14px">
-        ${[['UV','High 8'],['Sunrise','5:25 AM'],['Sunset','6:05 PM']].map(([l,v])=>
-          `<div><div style="font-size:10px;opacity:.55;font-weight:700;text-transform:uppercase;letter-spacing:.5px">${l}</div>
-            <div style="font-size:14px;font-weight:700;margin-top:2px">${v}</div></div>`).join('')}
+      <div style="text-align:center;margin-top:36px;">
+        <a href="services.html" class="btn btn-outline">View All Services</a>
       </div>
     </div>
-  </div>
-  <div style="display:flex;gap:8px;overflow-x:auto;padding:12px 14px 0;scrollbar-width:none">
-    ${[['💧',wx.hum+'%','Humidity'],['☁️','76%','Cloud'],['🌬','18 km/h','Wind'],['🌡','UV 8','UV Index']].map(([ic,v,l])=>
-      `<div style="background:var(--c2);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;text-align:center;flex-shrink:0;min-width:80px">${ic}<div style="font-size:13px;font-weight:700;margin-top:3px">${v}</div><div style="font-size:10px;color:var(--t3)">${l}</div></div>`).join('')}
-  </div>
-  <div style="padding:12px 14px 6px"><div style="font-size:16px;font-weight:800;margin-bottom:10px">${t('fcast')}</div></div>
-  <div class="wx-week" style="margin:0 14px">
-    ${WXD.map((d,i)=>`<div class="wx-day">
-      <span style="width:50px;font-size:13px;font-weight:${i===0?700:500};color:${i===0?'var(--fk)':'var(--t2)'}">${i===0?'Today':d.d}</span>
-      <span style="font-size:20px;margin-right:12px">${d.ic}</span>
-      <span style="flex:1;font-size:12px;color:var(--t3)">${d.ic.includes('🌧')?t('rain'):d.ic.includes('⛅')?t('pc'):t('sun')}</span>
-      <span style="font-size:12px;color:var(--t3);margin-right:8px">${d.lo}°</span>
-      <span style="font-size:13px;font-weight:700;color:var(--fk)">${d.hi}°</span>
-    </div>`).join('')}
-  </div>
-  <div style="padding:12px 14px 6px"><div style="font-size:16px;font-weight:800;margin-bottom:10px">${t('ftips')}</div></div>
-  <div style="padding:0 14px">
-    ${[{ic:'🌱',d:'Good planting window — next 3 days ideal for seedlings',bc:'rgba(0,178,72,.15)'},
-       {ic:'💧',d:'Rain expected Wednesday — hold irrigation Tuesday evening',bc:'rgba(40,116,240,.15)'},
-       {ic:'🌾',d:'Dry Sun–Mon conditions ideal for harvesting mature crops',bc:'rgba(255,107,0,.15)'},
-    ].map(tip=>`<div style="background:var(--c2);border:1px solid ${tip.bc};border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:12px">
-      <span style="font-size:24px">${tip.ic}</span>
-      <div style="font-size:13px;color:var(--t2);line-height:1.65">${tip.d}</div>
-    </div>`).join('')}
-  </div>`;
-}
+  </section>
 
-function renderFields(){
-  return `
-  <div style="padding:12px 14px">
-    <div style="font-size:18px;font-weight:800;letter-spacing:-.2px;margin-bottom:14px">${t('my_f')}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-      ${[[t('opt'),FIELDS.filter(f=>f.status==='O').length,'var(--fk)'],
-         [t('ref'),FIELDS.filter(f=>f.status==='R').length,'var(--red)'],
-         [t('ful'),FIELDS.filter(f=>f.status==='F').length,'var(--fk)'],
-         ['Avg',Math.round(FIELDS.reduce((s,f)=>s+f.health,0)/FIELDS.length)+'%','var(--grn)'],
-      ].map(([l,v,c])=>`<div style="background:var(--c2);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center">
-        <div style="font-size:22px;font-weight:800;color:${c};letter-spacing:-.3px">${v}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-top:4px">${l}</div>
-      </div>`).join('')}
-    </div>
-  </div>
-  <div class="stagger">${FIELDS.map(f=>fcard(f)).join('')}</div>`;
-}
-
-function renderAI(){
-  const noKey=!U.apiKey;
-  return `<div style="display:flex;flex-direction:column;height:100%;padding:12px 14px 0">
-    <div style="flex-shrink:0;margin-bottom:10px">
-      <div style="font-size:16px;font-weight:800;letter-spacing:-.2px">${t('ai_t')}</div>
-      <div style="font-size:12px;color:var(--t3);margin-top:2px">${t('ai_s')} · ${U.langs.map(c=>LANGS.find(l=>l.c===c)?.v||c).join(' · ')}</div>
-    </div>
-    ${noKey?`<div style="background:var(--c2);border:1px solid var(--bd2);border-radius:14px;padding:15px;margin-bottom:12px;font-size:13px;color:var(--t2);line-height:1.7">
-      ⚠️ <strong style="color:var(--t1)">API key needed.</strong><br/>
-      <a href="https://console.anthropic.com" target="_blank" style="color:var(--fk);font-weight:700">→ Get free key at console.anthropic.com</a>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <input id="ik" type="password" placeholder="sk-ant-..." style="flex:1;background:var(--c3);border:1.5px solid var(--bd2);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;color:var(--t1)"/>
-        <button onclick="saveIK()" style="background:var(--fk);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Save</button>
-      </div>
-    </div>`:''}
-    <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0;scrollbar-width:none" id="chat-msgs">
-      ${chatMsgs.map(m=>m.typing?
-        `<div class="cm ai"><div class="cm-av">🌾</div><div class="cm-bub" style="background:var(--c2);border:1px solid var(--bd);border-radius:4px 16px 16px 16px"><div style="display:flex;gap:5px;padding:3px 0"><div class="td"></div><div class="td"></div><div class="td"></div></div></div></div>`:
-        `<div class="cm ${m.role==='user'?'u':'ai'}">
-          ${m.role==='assistant'?'<div class="cm-av">🌾</div>':''}
-          <div class="cm-bub">${m.content.replace(/</g,'&lt;').replace(/\n/g,'<br/>')}</div>
-          ${m.role==='user'?'<div class="cm-av" style="background:linear-gradient(135deg,#b34000,var(--org))">👨‍🌾</div>':''}
-        </div>`).join('')}
-      <div id="cb"></div>
-    </div>
-    ${chatMsgs.length<=2?`<div style="display:flex;gap:8px;overflow-x:auto;padding:10px 0 8px;scrollbar-width:none">
-      ${t('sugg').map(s=>`<button style="background:var(--c2);border:1.5px solid var(--bd);border-radius:20px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--fk)';this.style.color='var(--fk)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--t2)'" onclick="sendMsg('${s.replace(/'/g,"\\'")}')"> ${s}</button>`).join('')}
-    </div>`:''}
-    <div style="flex-shrink:0;padding:10px 0 4px;border-top:1px solid var(--bd)">
-      <div style="display:flex;gap:8px">
-        <input class="ci" id="ci" placeholder="${t('ai_ph')}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"/>
-        <button class="cs" id="csb" onclick="sendMsg()">↑</button>
+  <!-- Why SmartKisan -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Why SmartKisan?</h2>
+      <p class="section-sub">We understand the challenges of Indian farming and built solutions that truly work.</p>
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-icon">🗣️</span>
+          <h3>Your Language</h3>
+          <p>Support in Hindi, Marathi, Telugu, Punjabi, Tamil, and other regional languages.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📡</span>
+          <h3>Works in Rural Areas</h3>
+          <p>Designed for low-bandwidth connections so farmers in remote villages can also use it.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🤝</span>
+          <h3>Trusted by Farmers</h3>
+          <p>Over 10,000 farmers across India trust SmartKisan for day-to-day farming decisions.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🆓</span>
+          <h3>Free to Use</h3>
+          <p>Basic advisory and information services are completely free for all farmers.</p>
+        </div>
       </div>
     </div>
-  </div>`;
-}
+  </section>
 
-function saveIK(){
-  const k=document.getElementById('ik')?.value?.trim();
-  if(k?.startsWith('sk-ant-')){U.apiKey=k;localStorage.setItem('mitti_apikey',k);renderTab('ai');}
-  else alert('Invalid. Must start with sk-ant-');
-}
-async function sendMsg(text){
-  const inp=document.getElementById('ci');
-  const msg=(text||(inp?inp.value:'')).trim();
-  if(!msg)return;
-  if(!U.apiKey){alert('Add API key (Menu → API Key Settings)');return;}
-  if(inp)inp.value='';
-  chatMsgs.push({role:'user',content:msg});
-  chatMsgs.push({role:'assistant',typing:true});
-  renderTab('ai');scrl();
-  try{
-    const sys=`You are KisanAI, a multilingual farming assistant. CRITICAL: Always reply in the EXACT language the user writes in. User: ${U.name||'Farmer'}, ${U.city}, ${U.state}, PIN ${U.pin}. Weather: ${U.wx?.temp}°C ${U.wx?.wx}. Farm: Rice 72% Optimal, Wheat 45% needs water, Maize 91% Full, Tomato 58% Optimal. Be friendly, concise, practical.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json','x-api-key':U.apiKey,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1024,system:sys,
-        messages:chatMsgs.filter(m=>!m.typing).map(m=>({role:m.role,content:m.content}))})
+  <!-- WhatsApp CTA -->
+  <section class="section" style="background:var(--yellow-light);text-align:center;">
+    <div class="container">
+      <span style="font-size:3rem;display:block;margin-bottom:16px;">💬</span>
+      <h2 class="section-title">Need Farming Help Right Now?</h2>
+      <p class="section-sub">
+        Message us on WhatsApp and get a response from our agri-experts within minutes.
+      </p>
+      <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20guidance"
+         class="btn btn-whatsapp"
+         target="_blank" rel="noopener">
+        <span>💬</span> Chat on WhatsApp Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="brand-name">🌾 Smart<span>Kisan</span></div>
+        <p>Empowering Indian farmers with smart, accessible, and actionable agricultural guidance.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+919999999999">📞 +91 99999 99999</a></li>
+          <li><a href="mailto:help@smartkisan.in">✉️ help@smartkisan.in</a></li>
+          <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener">💬 WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 SmartKisan. Made with ❤️ for Indian Farmers.
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float Button -->
+  <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20guidance"
+     class="whatsapp-float"
+     target="_blank" rel="noopener"
+     aria-label="Chat on WhatsApp">
+    <span class="wa-icon">💬</span> WhatsApp
+  </a>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => links.classList.remove('open'));
     });
-    const data=await res.json();
-    if(data.error)throw new Error(data.error.message);
-    chatMsgs=chatMsgs.filter(m=>!m.typing);
-    chatMsgs.push({role:'assistant',content:data.content?.map(b=>b.text||'').join('')||'No response.'});
-  }catch(e){
-    chatMsgs=chatMsgs.filter(m=>!m.typing);
-    chatMsgs.push({role:'assistant',content:'❌ '+e.message});
-  }
-  renderTab('ai');scrl();
-}
-function scrl(){setTimeout(()=>document.getElementById('cb')?.scrollIntoView({behavior:'smooth'}),60);}
-
-function openFMod(id){
-  const f=FIELDS.find(x=>x.id===id);if(!f)return;
-  document.getElementById('fmod-body').innerHTML=`
-    <div class="mod-handle"></div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
-      <div><div style="font-size:20px;font-weight:800">${f.name}</div>
-        <div style="font-size:13px;color:var(--t3);margin-top:2px">${f.crop} · ${f.area}</div></div>
-      <button style="background:var(--c3);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--t2);display:flex;align-items:center;justify-content:center" onclick="closeFMod()">✕</button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;background:var(--c2);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px">
-      <div style="text-align:center">${ring(f.moisture,66)}<div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Moisture</div></div>
-      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:var(--fk);letter-spacing:-.5px;margin-top:10px">${f.health}%</div><div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:6px">${t('ch')}</div></div>
-      <div style="text-align:center">${bdg(f.status)}<div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:12px">Status</div></div>
-    </div>
-    ${[[t('li'),f.irr],[t('fd'),t('d5')],[t('pr'),t('lo')]].map(([k,v])=>
-      `<div class="mod-row"><span>${k}</span><span>${v}</span></div>`).join('')}
-    <button style="width:100%;margin-top:16px;padding:15px;background:linear-gradient(135deg,var(--fk3),var(--fk));border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;box-shadow:0 4px 20px rgba(40,116,240,.3)">${t('irr')}</button>`;
-  document.getElementById('fmod-ov').classList.add('on');
-}
-function closeFMod(){document.getElementById('fmod-ov').classList.remove('on');}
-function openDrawer(){document.getElementById('dr-ov').classList.add('on');document.getElementById('drawer').classList.add('on');}
-function closeDrawer(){document.getElementById('dr-ov').classList.remove('on');document.getElementById('drawer').classList.remove('on');}
-function apiPrompt(){
-  const k=prompt('Paste your Anthropic API key:\n\nGet free key at console.anthropic.com','');
-  if(k&&k.startsWith('sk-ant-')){U.apiKey=k;localStorage.setItem('mitti_apikey',k);alert('✅ Key saved!');}
-  else if(k)alert('Invalid. Must start with sk-ant-');
-}
-
-/* ════ INIT ════ */
-(function(){
-  U.apiKey=localStorage.getItem('mitti_apikey')||'';
-  // Check if already registered
-  const saved=localStorage.getItem('mitti_name');
-  if(saved){
-    U.name=saved;
-    U.langs=JSON.parse(localStorage.getItem('mitti_langs')||'["en"]');
-    U.city=localStorage.getItem('mitti_city')||'Kharagpur';
-    U.state=localStorage.getItem('mitti_state')||'West Bengal';
-    U.pin=localStorage.getItem('mitti_pin')||'721301';
-    U.wx=JSON.parse(localStorage.getItem('mitti_wx')||'{"temp":"33","wx":"Cloudy","hum":"76"}');
-    finish();
-  }
-})();
-</script>
+  </script>
 </body>
 </html>
