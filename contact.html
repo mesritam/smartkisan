@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – SmartKisan</title>
+  <meta name="description" content="Contact SmartKisan for farming guidance. Call, email, or WhatsApp us for quick help." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🌾</span>
+        Smart<span>Kisan</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Contact Us</h1>
+    <p>We're here to help. Reach us by phone, email, or WhatsApp — in your own language.</p>
+  </div>
+
+  <!-- WhatsApp Banner -->
+  <div style="background:#25D366;padding:20px;text-align:center;">
+    <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20help"
+       target="_blank" rel="noopener"
+       style="color:#fff;font-size:1.15rem;font-weight:700;display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
+      <span style="font-size:1.5rem;">💬</span>
+      Fastest Reply: Message us on WhatsApp — +91 99999 99999
+    </a>
+  </div>
+
+  <!-- Contact Section -->
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <h3>Get in Touch</h3>
+
+          <div class="contact-item">
+            <span class="ci-icon">📞</span>
+            <div>
+              <span class="ci-label">Phone / Helpline</span>
+              <a href="tel:+919999999999" class="ci-value">+91 99999 99999</a>
+              <div style="font-size:0.85rem;color:var(--text-muted);margin-top:3px;">
+                Mon – Sat, 8 AM – 8 PM
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <span class="ci-icon">✉️</span>
+            <div>
+              <span class="ci-label">Email</span>
+              <a href="mailto:help@smartkisan.in" class="ci-value">help@smartkisan.in</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <span class="ci-icon">💬</span>
+            <div>
+              <span class="ci-label">WhatsApp</span>
+              <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20help"
+                 target="_blank" rel="noopener" class="ci-value">
+                Chat Now → +91 99999 99999
+              </a>
+              <div style="font-size:0.85rem;color:var(--text-muted);margin-top:3px;">
+                Available 24 hours, 7 days a week
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <span class="ci-icon">📍</span>
+            <div>
+              <span class="ci-label">Head Office</span>
+              <span class="ci-value">SmartKisan Agri Solutions,<br/>
+                Sector 12, Agricultural Hub,<br/>
+                New Delhi – 110001, India
+              </span>
+            </div>
+          </div>
+
+          <!-- Large WhatsApp button -->
+          <div style="margin-top:28px;">
+            <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20guidance"
+               class="btn btn-whatsapp"
+               target="_blank" rel="noopener"
+               style="width:100%;justify-content:center;font-size:1.1rem;">
+              <span>💬</span> Open WhatsApp Chat
+            </a>
+          </div>
+
+          <!-- Languages note -->
+          <div style="margin-top:20px;padding:16px;background:var(--green-bg);border-radius:var(--radius);font-size:0.9rem;color:var(--text-muted);">
+            🗣️ <strong>We speak your language:</strong><br/>
+            Hindi · Marathi · Telugu · Punjabi · Tamil · Kannada · Bengali · Gujarati
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form">
+          <h3>Send Us a Message</h3>
+          <form id="contactForm" novalidate>
+            <div class="form-group">
+              <label for="name">Your Name</label>
+              <input type="text" id="name" name="name" placeholder="e.g. Ramesh Kumar" required />
+            </div>
+            <div class="form-group">
+              <label for="phone">Mobile Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="e.g. 98765 43210" required />
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <select id="state" name="state">
+                <option value="">-- Select your State --</option>
+                <option>Andhra Pradesh</option>
+                <option>Bihar</option>
+                <option>Gujarat</option>
+                <option>Haryana</option>
+                <option>Jharkhand</option>
+                <option>Karnataka</option>
+                <option>Kerala</option>
+                <option>Madhya Pradesh</option>
+                <option>Maharashtra</option>
+                <option>Odisha</option>
+                <option>Punjab</option>
+                <option>Rajasthan</option>
+                <option>Tamil Nadu</option>
+                <option>Telangana</option>
+                <option>Uttar Pradesh</option>
+                <option>Uttarakhand</option>
+                <option>West Bengal</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="topic">Topic</label>
+              <select id="topic" name="topic">
+                <option value="">-- What do you need help with? --</option>
+                <option>Crop Advisory</option>
+                <option>Weather Information</option>
+                <option>Market Prices</option>
+                <option>Pest or Disease</option>
+                <option>Government Scheme</option>
+                <option>Loan / KCC</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Your Message</label>
+              <textarea id="message" name="message" placeholder="Describe your farming question or issue..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;font-size:1.05rem;">
+              Send Message
+            </button>
+          </form>
+          <div id="formSuccess" style="display:none;margin-top:16px;padding:14px 16px;background:#e8f5e9;border:1px solid var(--green);border-radius:8px;color:var(--green-dark);font-weight:600;text-align:center;">
+            ✅ Thank you! We'll get back to you shortly on WhatsApp or phone.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-sub">Quick answers to common questions from farmers.</p>
+      <div style="max-width:700px;margin:0 auto;">
+        <div class="card" style="text-align:left;margin-bottom:16px;">
+          <h3 style="margin-bottom:8px;">🌱 Is SmartKisan free to use?</h3>
+          <p>Yes! Basic crop advisory, weather alerts, and mandi price information are completely free for all farmers.</p>
+        </div>
+        <div class="card" style="text-align:left;margin-bottom:16px;">
+          <h3 style="margin-bottom:8px;">📱 Do I need a smartphone?</h3>
+          <p>You only need a basic smartphone with WhatsApp to access our services. No app download needed.</p>
+        </div>
+        <div class="card" style="text-align:left;margin-bottom:16px;">
+          <h3 style="margin-bottom:8px;">🗣️ Can I ask questions in Hindi?</h3>
+          <p>Absolutely! You can message us in Hindi, Marathi, Telugu, Punjabi, Tamil, Kannada, Bengali, or Gujarati.</p>
+        </div>
+        <div class="card" style="text-align:left;margin-bottom:16px;">
+          <h3 style="margin-bottom:8px;">⏰ How quickly do you respond?</h3>
+          <p>WhatsApp messages are typically answered within 30 minutes during business hours (8 AM – 8 PM). Urgent pest/disease questions are prioritised.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="brand-name">🌾 Smart<span>Kisan</span></div>
+        <p>Empowering Indian farmers with smart, accessible, and actionable agricultural guidance.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+919999999999">📞 +91 99999 99999</a></li>
+          <li><a href="mailto:help@smartkisan.in">✉️ help@smartkisan.in</a></li>
+          <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener">💬 WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 SmartKisan. Made with ❤️ for Indian Farmers.
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float Button -->
+  <a href="https://wa.me/919999999999?text=Hello%20SmartKisan%2C%20I%20need%20farming%20guidance"
+     class="whatsapp-float"
+     target="_blank" rel="noopener"
+     aria-label="Chat on WhatsApp">
+    <span class="wa-icon">💬</span> WhatsApp
+  </a>
+
+  <script>
+    // Navbar toggle
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => links.classList.remove('open'));
+    });
+
+    // Contact form – show success message (static demo)
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name  = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !phone) {
+        alert('Please enter your name and mobile number.');
+        return;
+      }
+      this.style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
