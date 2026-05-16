@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SmartKisan is a modern agriculture web app for farmers with weather, crop prices, soil health, schemes, and crop suggestions.">
+  <title>SmartKisan | Farmer Agriculture App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="SmartKisan home">
+        <span class="brand-mark">SK</span>
+        <span class="brand-text">SmartKisan</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-menu" id="navMenu">
+        <a href="#home">Home</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#weather">Weather</a>
+        <a href="#prices">Prices</a>
+        <a href="#soil">Soil</a>
+        <a href="#suggest">AI Crop</a>
+        <a href="#schemes">Schemes</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <a class="nav-cta" href="#auth">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home" aria-labelledby="heroTitle">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="eyebrow reveal">Digital farming assistant</p>
+        <h1 id="heroTitle" class="reveal">SmartKisan</h1>
+        <p class="hero-copy reveal">Weather-aware planning, live market guidance, soil health insights, government schemes, and AI crop suggestions for better farm decisions.</p>
+        <div class="hero-actions reveal">
+          <a class="btn primary" href="#auth">Start farming smarter</a>
+          <a class="btn ghost" href="#dashboard">View dashboard</a>
+        </div>
+        <div class="hero-stats reveal" aria-label="SmartKisan highlights">
+          <div>
+            <strong>24/7</strong>
+            <span>farm alerts</span>
+          </div>
+          <div>
+            <strong>18+</strong>
+            <span>crop markets</span>
+          </div>
+          <div>
+            <strong>6</strong>
+            <span>soil checks</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dashboard-section" id="dashboard" aria-labelledby="dashboardTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Farmer workspace</p>
+        <h2 id="dashboardTitle">Your farm dashboard</h2>
+        <p>Track the most important signals for the day in one calm, practical place.</p>
+      </div>
+
+      <div class="dashboard-grid reveal">
+        <article class="metric-card">
+          <span class="metric-label">Weather risk</span>
+          <strong id="dashWeather">Low</strong>
+          <p>Light winds and clear sky expected this morning.</p>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Best price today</span>
+          <strong id="dashPrice">Wheat</strong>
+          <p>Average mandi rate is trending upward in North Zone.</p>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Soil action</span>
+          <strong>Check pH</strong>
+          <p>Ideal range for most crops is 6.0 to 7.5.</p>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Scheme alert</span>
+          <strong>PM-KISAN</strong>
+          <p>Keep Aadhaar, land records, and bank details ready.</p>
+        </article>
+      </div>
+
+      <div class="task-strip reveal">
+        <div>
+          <span class="status-dot"></span>
+          <strong id="welcomeFarmer">Welcome, farmer</strong>
+          <p>Sign in to personalize dashboard data for your farm.</p>
+        </div>
+        <a class="link-btn" href="#suggest">Get crop advice</a>
+      </div>
+    </section>
+
+    <section class="section auth-section" id="auth" aria-labelledby="authTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Farmer account</p>
+        <h2 id="authTitle">Login or create your SmartKisan profile</h2>
+        <p>Use the demo login or create a local test account. This simple backend stores accounts in memory for learning purposes.</p>
+      </div>
+
+      <div class="auth-grid">
+        <form class="form-panel reveal" id="loginForm">
+          <h3>Farmer login</h3>
+          <label for="loginPhone">Phone number</label>
+          <input id="loginPhone" name="phone" type="tel" placeholder="9999999999" required>
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" placeholder="farmer123" required>
+          <button class="btn primary" type="submit">Login</button>
+          <p class="form-note" id="loginMessage">Demo: 9999999999 / farmer123</p>
+        </form>
+
+        <form class="form-panel reveal" id="signupForm">
+          <h3>Farmer signup</h3>
+          <div class="two-col">
+            <div>
+              <label for="signupName">Full name</label>
+              <input id="signupName" name="name" type="text" placeholder="Your name" required>
+            </div>
+            <div>
+              <label for="signupPhone">Phone number</label>
+              <input id="signupPhone" name="phone" type="tel" placeholder="10 digit number" required>
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="signupState">State</label>
+              <select id="signupState" name="state" required>
+                <option value="">Select state</option>
+                <option>Punjab</option>
+                <option>Haryana</option>
+                <option>Maharashtra</option>
+                <option>Karnataka</option>
+                <option>Uttar Pradesh</option>
+                <option>Tamil Nadu</option>
+              </select>
+            </div>
+            <div>
+              <label for="signupCrop">Main crop</label>
+              <input id="signupCrop" name="crop" type="text" placeholder="Wheat, Rice, Cotton" required>
+            </div>
+          </div>
+          <label for="signupPassword">Create password</label>
+          <input id="signupPassword" name="password" type="password" minlength="6" placeholder="Minimum 6 characters" required>
+          <button class="btn primary" type="submit">Create account</button>
+          <p class="form-note" id="signupMessage">Your account is available until the server restarts.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section weather-section" id="weather" aria-labelledby="weatherTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Weather planning</p>
+        <h2 id="weatherTitle">Weather section</h2>
+        <p>Check local conditions before irrigation, spraying, harvesting, or transport.</p>
+      </div>
+
+      <div class="tool-row reveal">
+        <label class="sr-only" for="weatherCity">Select city</label>
+        <select id="weatherCity">
+          <option value="Ludhiana">Ludhiana</option>
+          <option value="Karnal">Karnal</option>
+          <option value="Nashik">Nashik</option>
+          <option value="Mysuru">Mysuru</option>
+          <option value="Lucknow">Lucknow</option>
+        </select>
+        <button class="btn primary" id="weatherButton" type="button">Get forecast</button>
+      </div>
+
+      <div class="weather-layout">
+        <article class="weather-main reveal" id="weatherMain">
+          <span class="loading-text">Loading weather...</span>
+        </article>
+        <div class="weather-cards reveal" id="forecastCards"></div>
+      </div>
+    </section>
+
+    <section class="section prices-section" id="prices" aria-labelledby="pricesTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Market intelligence</p>
+        <h2 id="pricesTitle">Crop price dashboard</h2>
+        <p>Compare sample mandi prices and spot crops with strong demand.</p>
+      </div>
+
+      <div class="tool-row reveal">
+        <label class="sr-only" for="priceSearch">Search crop</label>
+        <input id="priceSearch" type="search" placeholder="Search crop or market">
+        <label class="sr-only" for="priceCategory">Filter category</label>
+        <select id="priceCategory">
+          <option value="all">All categories</option>
+          <option value="cereal">Cereals</option>
+          <option value="pulse">Pulses</option>
+          <option value="cash">Cash crops</option>
+          <option value="vegetable">Vegetables</option>
+        </select>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table>
+          <thead>
+            <tr>
+              <th>Crop</th>
+              <th>Market</th>
+              <th>Price per quintal</th>
+              <th>Trend</th>
+              <th>Demand</th>
+            </tr>
+          </thead>
+          <tbody id="priceTable">
+            <tr>
+              <td colspan="5">Loading prices...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section soil-section" id="soil" aria-labelledby="soilTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Soil health</p>
+        <h2 id="soilTitle">Soil health information</h2>
+        <p>Healthy soil improves water retention, nutrient uptake, and long-term crop yield.</p>
+      </div>
+
+      <div class="soil-layout">
+        <div class="soil-image reveal">
+          <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=900&q=80" alt="Farmer holding healthy soil in a field">
+        </div>
+        <div class="soil-grid reveal">
+          <article class="info-card">
+            <span>Nitrogen</span>
+            <strong>Leaf and stem growth</strong>
+            <p>Low nitrogen often causes pale leaves. Add compost, green manure, or a balanced fertilizer after testing.</p>
+          </article>
+          <article class="info-card">
+            <span>Phosphorus</span>
+            <strong>Root development</strong>
+            <p>Important for early growth, flowering, and seed formation. Works best near neutral pH.</p>
+          </article>
+          <article class="info-card">
+            <span>Potassium</span>
+            <strong>Stress resistance</strong>
+            <p>Helps crops handle drought, disease pressure, and fruit quality.</p>
+          </article>
+          <article class="info-card">
+            <span>pH range</span>
+            <strong>6.0 to 7.5 ideal</strong>
+            <p>Soil outside this range can block nutrient absorption even when nutrients are present.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section suggestion-section" id="suggest" aria-labelledby="suggestTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">AI crop suggestion</p>
+        <h2 id="suggestTitle">Find suitable crops for your conditions</h2>
+        <p>Enter farm conditions and the backend will return smart sample recommendations.</p>
+      </div>
+
+      <div class="suggest-layout">
+        <form class="form-panel reveal" id="suggestForm">
+          <div class="two-col">
+            <div>
+              <label for="suggestState">State</label>
+              <select id="suggestState" name="state" required>
+                <option value="Punjab">Punjab</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+              </select>
+            </div>
+            <div>
+              <label for="season">Season</label>
+              <select id="season" name="season" required>
+                <option value="rabi">Rabi</option>
+                <option value="kharif">Kharif</option>
+                <option value="zaid">Zaid</option>
+              </select>
+            </div>
+          </div>
+          <div class="two-col">
+            <div>
+              <label for="soilType">Soil type</label>
+              <select id="soilType" name="soilType" required>
+                <option value="alluvial">Alluvial</option>
+                <option value="black">Black</option>
+                <option value="red">Red</option>
+                <option value="sandy">Sandy</option>
+                <option value="loamy">Loamy</option>
+              </select>
+            </div>
+            <div>
+              <label for="irrigation">Irrigation</label>
+              <select id="irrigation" name="irrigation" required>
+                <option value="good">Good</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+          <label for="rainfall">Expected rainfall in mm</label>
+          <input id="rainfall" name="rainfall" type="number" min="0" max="2000" value="650" required>
+          <button class="btn primary" type="submit">Suggest crops</button>
+        </form>
+
+        <div class="suggest-results reveal" id="suggestResults">
+          <article class="result-card">
+            <span>Ready when you are</span>
+            <strong>Submit farm details</strong>
+            <p>Your crop suggestions will appear here with reasons and practical next steps.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section schemes-section" id="schemes" aria-labelledby="schemesTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Government support</p>
+        <h2 id="schemesTitle">Government scheme section</h2>
+        <p>Discover helpful programs for income support, insurance, irrigation, and soil testing.</p>
+      </div>
+      <div class="scheme-grid reveal" id="schemeGrid">
+        <span class="loading-text">Loading schemes...</span>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contact" aria-labelledby="contactTitle">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Contact</p>
+        <h2 id="contactTitle">Talk to SmartKisan support</h2>
+        <p>Send a message for help with crop planning, soil testing, schemes, or market data.</p>
+      </div>
+
+      <div class="contact-layout">
+        <form class="form-panel reveal" id="contactForm">
+          <div class="two-col">
+            <div>
+              <label for="contactName">Name</label>
+              <input id="contactName" name="name" type="text" placeholder="Your name" required>
+            </div>
+            <div>
+              <label for="contactPhone">Phone</label>
+              <input id="contactPhone" name="phone" type="tel" placeholder="10 digit number" required>
+            </div>
+          </div>
+          <label for="contactTopic">Topic</label>
+          <select id="contactTopic" name="topic" required>
+            <option>Crop planning</option>
+            <option>Weather alert</option>
+            <option>Soil health</option>
+            <option>Government scheme</option>
+            <option>Market price</option>
+          </select>
+          <label for="contactMessage">Message</label>
+          <textarea id="contactMessage" name="message" rows="5" placeholder="How can we help?" required></textarea>
+          <button class="btn primary" type="submit">Send message</button>
+          <p class="form-note" id="contactStatus">We usually respond within one working day.</p>
+        </form>
+
+        <aside class="contact-panel reveal">
+          <h3>SmartKisan help desk</h3>
+          <p>Phone: +91 90000 12345</p>
+          <p>Email: support@smartkisan.local</p>
+          <p>Hours: 8:00 AM to 7:00 PM</p>
+          <div class="mini-list">
+            <span>Weather alerts</span>
+            <span>Mandi insights</span>
+            <span>Soil testing help</span>
+            <span>Scheme guidance</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <a class="brand footer-brand" href="#home">
+        <span class="brand-mark">SK</span>
+        <span class="brand-text">SmartKisan</span>
+      </a>
+      <p>Modern agriculture tools for informed, resilient farmers.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#weather">Weather</a>
+      <a href="#prices">Crop prices</a>
+      <a href="#schemes">Schemes</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
