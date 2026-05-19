@@ -7,6 +7,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+const OPENWEATHER_UNITS = process.env.OPENWEATHER_UNITS || "metric";
+const OPENWEATHER_BASE = "https://api.openweathermap.org/data/2.5";
+
 const farmers = new Map([
   ["9999999999", {
     name: "Demo Farmer",
@@ -17,7 +21,7 @@ const farmers = new Map([
   }]
 ]);
 
-const weatherByCity = {
+const fallbackWeatherByCity = {
   Ludhiana: {
     city: "Ludhiana",
     temperature: 28,
@@ -258,6 +262,89 @@ function buildRecommendations({ season, soilType, irrigation, rainfall }) {
     .slice(0, 3);
 }
 
+function riskFromRain(rainChance) {
+  if (rainChance >= 60) return "High";
+  if (rainChance >= 30) return "Medium";
+  return "Low";
+}
+
+function summaryFromConditions({ description, temp, rainChance }) {
+  const tempNote = temp >= 35 ? "Hot" : temp <= 18 ? "Cool" : "Mild";
+  const rainNote = rainChance >= 60 ? "likely rain" : rainChance >= 30 ? "possible showers" : "dry conditions";
+  return `${tempNote} weather with ${rainNote}. ${description}`;
+}
+
+function forecastNote(pop) {
+  if (pop >= 0.6) return "Likely showers. Consider delaying spraying.";
+  if (pop >= 0.3) return "Possible showers. Monitor field moisture.";
+  return "Stable conditions for field work.";
+}
+
+function groupForecastByDay(list = []) {
+  const byDay = new Map();
+  list.forEach((entry) => {
+    const date = entry.dt_txt?.split(" ")[0];
+    if (!date) return;
+    if (!byDay.has(date)) byDay.set(date, []);
+    byDay.get(date).push(entry);
+  });
+  return Array.from(byDay.entries()).slice(0, 3);
+}
+
+async function fetchOpenWeather(city) {
+  if (!OPENWEATHER_API_KEY) {
+    return null;
+  }
+
+  const encodedCity = encodeURIComponent(city);
+  const currentRes = await fetch(
+    `${OPENWEATHER_BASE}/weather?q=${encodedCity}&appid=${OPENWEATHER_API_KEY}&units=${OPENWEATHER_UNITS}`
+  );
+
+  if (!currentRes.ok) {
+    const message = await currentRes.text();
+    throw new Error(`OpenWeather error (${currentRes.status}): ${message}`);
+  }
+
+  const current = await currentRes.json();
+  const forecastRes = await fetch(
+    `${OPENWEATHER_BASE}/forecast?q=${encodedCity}&appid=${OPENWEATHER_API_KEY}&units=${OPENWEATHER_UNITS}`
+  );
+
+  const forecastData = forecastRes.ok ? await forecastRes.json() : null;
+  const groupedForecast = forecastData ? groupForecastByDay(forecastData.list) : [];
+  const rainChance = forecastData
+    ? Math.round(Math.max(0, ...forecastData.list.map((item) => item.pop || 0)) * 100)
+    : 0;
+
+  const temperature = Math.round(current.main?.temp ?? 0);
+  const humidity = Math.round(current.main?.humidity ?? 0);
+  const wind = Math.round(current.wind?.speed ?? 0);
+  const description = current.weather?.[0]?.description || "Weather update available.";
+
+  const forecast = groupedForecast.map(([date, entries], index) => {
+    const avgTemp = entries.reduce((sum, entry) => sum + (entry.main?.temp || 0), 0) / entries.length;
+    const maxPop = Math.max(0, ...entries.map((entry) => entry.pop || 0));
+    const label = index === 0 ? "Today" : index === 1 ? "Tomorrow" : "Day 3";
+    return {
+      day: label,
+      temp: Math.round(avgTemp),
+      note: forecastNote(maxPop)
+    };
+  });
+
+  return {
+    city: current.name || city,
+    temperature,
+    humidity,
+    wind,
+    rainChance,
+    risk: riskFromRain(rainChance),
+    summary: summaryFromConditions({ description, temp: temperature, rainChance }),
+    forecast
+  };
+}
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -325,10 +412,19 @@ app.post("/api/auth/login", (req, res) => {
   res.json({ message: "Login successful.", user: publicFarmer(farmer) });
 });
 
-app.get("/api/weather", (req, res) => {
+app.get("/api/weather", async (req, res) => {
   const city = String(req.query.city || "Ludhiana");
-  const weather = weatherByCity[city] || weatherByCity.Ludhiana;
-  res.json({ weather });
+  try {
+    const liveWeather = await fetchOpenWeather(city);
+    if (liveWeather) {
+      return res.json({ weather: liveWeather, source: "openweather" });
+    }
+  } catch (error) {
+    console.error("OpenWeather fetch failed:", error.message);
+  }
+
+  const weather = fallbackWeatherByCity[city] || fallbackWeatherByCity.Ludhiana;
+  res.json({ weather, source: "fallback" });
 });
 
 app.get("/api/prices", (req, res) => {
